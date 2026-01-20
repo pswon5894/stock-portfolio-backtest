@@ -38,7 +38,7 @@ function App() {
 
   // 서버 연결 테스트
   useEffect(() => {
-    fetch('http://localhost:5000/')
+    fetch('https://pswon5894.github.io/stock-portfolio-backtest/')
       .then(res => res.json())
       .then(data => {
         setServerStatus('✅ 연결됨');
