@@ -23,7 +23,7 @@ if (process.env.NODE_ENV === 'production') {
 // Middleware
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://<YOUR_GITHUB_USERNAME>.github.io'
+  'https://pswon5894.github.io/stock-portfolio-backtest/'
 ];
 
 const corsOptions = {
