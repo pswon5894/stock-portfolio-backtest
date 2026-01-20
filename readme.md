@@ -72,7 +72,7 @@ https://pswon5894.github.io/stock-portfolio-backtest/
 
 후보 vercel
 
-백엔드 render (5분 콜드 슬립 있음)
+백엔드 render (초기 구동 느림,  장기 미사용시 서버를 깨워야해서, 무료 티어, 5분 콜드 슬립 있음)
 깃 허브 코드를 바탕으로 커밋을 하게되면 자동으로 업데이트 배포 해준다
 
 후보 aws s3
