@@ -1,3 +1,5 @@
+https://pswon5894.github.io/stock-portfolio-backtest/
+
 # 프로젝트 작동 방식 설명
 
 이 문서는 주식 포트폴리오 백테스트 애플리케이션의 전체 아키텍처, 구성 요소 및 데이터 흐름에 대해 설명합니다.
