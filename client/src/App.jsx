@@ -97,7 +97,7 @@ function App() {
     
     try {
       // 서버 API 호출 시도
-      const response = await fetch('http://localhost:5000/api/backtest/run', {
+      const response = await fetch('https://stock-portfolio-backtest.onrender.com/api/backtest/run', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
