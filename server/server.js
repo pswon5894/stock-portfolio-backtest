@@ -21,10 +21,22 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Middleware
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://<YOUR_GITHUB_USERNAME>.github.io'
+];
+
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: function (origin, callback) {
+    // 요청 출처(origin)가 허용 목록에 있거나, origin이 없는 경우(예: Postman)
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true); // 허용
+    } else {
+      callback(new Error('Not allowed by CORS')); // 거부
+    }
+  },
   optionsSuccessStatus: 200
-}
+};
 
 app.use(cors(corsOptions));
 app.use(express.json());
