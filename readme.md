@@ -68,4 +68,12 @@ https://pswon5894.github.io/stock-portfolio-backtest/
 예정 사항
 배포
 
+프론트엔드 git page 호스팅 배포
+
+후보 vercel
+
+백엔드 render (5분 콜드 슬립 있음)
+
+후보 aws s3
+
 ## 6 후기

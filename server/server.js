@@ -6,7 +6,19 @@ require('dotenv').config();
 
 const app = express();
 
-const config = require("./dev");
+// 환경에 따라 설정 분리
+let config;
+if (process.env.NODE_ENV === 'production') {
+  // 프로덕션 환경: Render 대시보드에 설정된 환경 변수 사용
+  config = {
+    DB_USERNAME: process.env.DB_USERNAME,
+    DB_PASSWORD: process.env.DB_PASSWORD,
+    DB_NAME: process.env.DB_NAME,
+  };
+} else {
+  // 개발 환경: 로컬 dev.js 파일 사용
+  config = require("./dev");
+}
 
 // Middleware
 const corsOptions = {
