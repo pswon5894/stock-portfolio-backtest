@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
-  // 상태 관리
-  const [step, setStep] = useState(1);
+  // ==================== 상태 관리 ====================
+  const [step, setStep] = useState(0); // 0: 홈, 1-5: 백테스트 단계
   const [serverStatus, setServerStatus] = useState('확인 중...');
   
   // 포트폴리오 데이터
@@ -14,10 +14,12 @@ function App() {
   // 주식 검색
   const [searchQuery, setSearchQuery] = useState('');
   const [availableStocks] = useState([
-    { ticker: 'QQQ', name: '나스닥100' },
-    { ticker: 'QLD', name: '나스닥2배' },
-    { ticker: 'TQQQ', name: '나스닥3배' },
-    { ticker: 'SPY', name: 'snp500' },
+    { ticker: 'QQQ', name: '나스닥 100' },
+    { ticker: 'SPY', name: 'S&P 500' },
+    { ticker: 'QLD', name: '나스닥 2배' },
+    { ticker: 'SSO', name: 'S&P 2배' },
+    { ticker: 'TQQQ', name: '나스닥 3배' },
+    { ticker: 'UPRO', name: 'S&P 3배' },
     { ticker: 'AAPL', name: '애플' },
     { ticker: 'MSFT', name: '마이크로소프트' },
     { ticker: 'GOOGL', name: '구글' },
@@ -32,13 +34,20 @@ function App() {
   const [startDate, setStartDate] = useState('2020-01-01');
   const [endDate, setEndDate] = useState('2023-12-31');
   
-  // 결과
+  // 결과 및 로딩
   const [backtestResult, setBacktestResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  
+  // 랭킹 및 모달
+  const [rankings, setRankings] = useState([]);
+  const [rankingsLoading, setRankingsLoading] = useState(true);
+  const [selectedPortfolioId, setSelectedPortfolioId] = useState(null);
+  const [portfolioDetail, setPortfolioDetail] = useState(null);
+  const [modalLoading, setModalLoading] = useState(false);
 
-  // 서버 연결 테스트
+  // ==================== 서버 연결 테스트 ====================
   useEffect(() => {
-    fetch('https://stock-portfolio-backtest.onrender.com')
+    fetch('http://localhost:5000/')
       .then(res => res.json())
       .then(data => {
         setServerStatus('✅ 연결됨');
@@ -48,7 +57,53 @@ function App() {
       });
   }, []);
 
-  // 종목 추가
+  // ==================== 랭킹 조회 ====================
+  useEffect(() => {
+    if (step === 0) {
+      fetchRankings();
+    }
+  }, [step]);
+
+  const fetchRankings = async () => {
+    setRankingsLoading(true);
+    try {
+      const response = await fetch('http://localhost:5000/api/backtest/rankings?limit=3');
+      if (response.ok) {
+        const data = await response.json();
+        setRankings(data);
+      }
+    } catch (error) {
+      console.error('랭킹 조회 실패:', error);
+      setRankings([]);
+    } finally {
+      setRankingsLoading(false);
+    }
+  };
+
+  // ==================== 포트폴리오 상세 조회 ====================
+  useEffect(() => {
+    if (selectedPortfolioId) {
+      fetchPortfolioDetail(selectedPortfolioId);
+    }
+  }, [selectedPortfolioId]);
+
+  const fetchPortfolioDetail = async (portfolioId) => {
+    setModalLoading(true);
+    try {
+      const response = await fetch(`http://localhost:5000/api/backtest/results/${portfolioId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setPortfolioDetail(data);
+      }
+    } catch (error) {
+      console.error('포트폴리오 조회 실패:', error);
+      setPortfolioDetail(null);
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  // ==================== 종목 관리 함수 ====================
   const addStock = (stock) => {
     if (holdings.find(h => h.ticker === stock.ticker)) {
       alert('이미 추가된 종목입니다.');
@@ -58,12 +113,10 @@ function App() {
     setSearchQuery('');
   };
 
-  // 종목 삭제
   const removeStock = (ticker) => {
     setHoldings(holdings.filter(h => h.ticker !== ticker));
   };
 
-  // 비중 업데이트
   const updateWeight = (ticker, weight) => {
     const newHoldings = holdings.map(h => 
       h.ticker === ticker ? { ...h, weight: parseFloat(weight) || 0 } : h
@@ -71,10 +124,15 @@ function App() {
     setHoldings(newHoldings);
   };
 
-  // 총 비중 계산
+  // ==================== 계산 ====================
   const totalWeight = holdings.reduce((sum, h) => sum + h.weight, 0);
 
-  // 다음 단계로
+  const filteredStocks = availableStocks.filter(stock =>
+    stock.ticker.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    stock.name.includes(searchQuery)
+  );
+
+  // ==================== 단계 이동 ====================
   const goToNextStep = () => {
     if (step === 1 && !portfolioName) {
       alert('포트폴리오 이름을 입력하세요');
@@ -91,13 +149,12 @@ function App() {
     setStep(step + 1);
   };
 
-  // 백테스트 실행
+  // ==================== 백테스트 실행 ====================
   const runBacktest = async () => {
     setLoading(true);
     
     try {
-      // 서버 API 호출 시도
-      const response = await fetch('https://stock-portfolio-backtest.onrender.com/api/backtest/run', {
+      const response = await fetch('http://localhost:5000/api/backtest/run', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -114,7 +171,6 @@ function App() {
       });
 
       if (response.ok) {
-        // 서버에서 실제 백테스트 결과 받음
         const result = await response.json();
         setBacktestResult({
           ...result,
@@ -124,39 +180,157 @@ function App() {
         });
         setStep(5);
       } else {
-        throw new Error('서버 응답 오류');
+        const error = await response.json();
+        throw new Error(error.error || '서버 응답 오류');
       }
     } catch (error) {
-      console.error('백테스트 실행 중 오류 발생:', error);
-      alert('백테스트 실행에 실패했습니다.');
+      console.log('서버 연결 실패, 모의 데이터 사용:', error);
+      
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const mockResult = {
+        performance: {
+          totalReturn: (Math.random() * 100 - 20).toFixed(2),
+          annualizedReturn: (Math.random() * 30 - 5).toFixed(2),
+          sharpeRatio: (Math.random() * 2).toFixed(2),
+          maxDrawdown: (Math.random() * 30).toFixed(2),
+          volatility: (Math.random() * 40 + 10).toFixed(2),
+          winRate: (Math.random() * 60 + 30).toFixed(2),
+        },
+        portfolioName,
+        holdings,
+        settings: { startDate, endDate, initialCapital }
+      };
+      
+      setBacktestResult(mockResult);
+      setStep(5);
+      alert('⚠️ 서버에서 실제 데이터를 가져올 수 없어 모의 데이터를 표시합니다.\n에러: ' + error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  // 검색 필터링
-  const filteredStocks = availableStocks.filter(stock =>
-    stock.ticker.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    stock.name.includes(searchQuery)
-  );
+  // ==================== 리셋 ====================
+  const resetBacktest = () => {
+    setStep(1);
+    setPortfolioName('');
+    setHoldings([]);
+    setBacktestResult(null);
+  };
 
-  // 화면 렌더링
+  const startNewBacktest = () => {
+    setStep(1);
+    setPortfolioName('');
+    setHoldings([]);
+    setBacktestResult(null);
+  };
+
+  // ==================== 모달 닫기 ====================
+  const closeModal = () => {
+    setSelectedPortfolioId(null);
+    setPortfolioDetail(null);
+  };
+
+  // ==================== 헬퍼 함수 ====================
+  const getMedalEmoji = (rank) => {
+    switch(rank) {
+      case 0: return '🥇';
+      case 1: return '🥈';
+      case 2: return '🥉';
+      default: return '';
+    }
+  };
+
+  // ==================== 렌더링 ====================
   return (
     <div className="App">
+      {/* ========== 헤더 ========== */}
       <header className="App-header">
         <h1>📈 주식 포트폴리오 백테스터</h1>
         <p className="status">서버: {serverStatus}</p>
-        <div className="progress-bar">
-          {[1, 2, 3, 4, 5].map(s => (
-            <div key={s} className={`step ${step >= s ? 'active' : ''}`}>
-              {s}
-            </div>
-          ))}
-        </div>
+        
+        {/* 진행 바 */}
+        {step > 0 && (
+          <div className="progress-bar">
+            {[1, 2, 3, 4, 5].map(s => (
+              <div key={s} className={`step ${step >= s ? 'active' : ''}`}>
+                {s}
+              </div>
+            ))}
+          </div>
+        )}
+        
+        {/* 홈 버튼 */}
+        {step > 0 && (
+          <button onClick={() => setStep(0)} className="home-button">
+            🏠 홈으로
+          </button>
+        )}
       </header>
 
       <main className="container">
-        {/* Step 1: 포트폴리오 기본 정보 */}
+        {/* ========== 홈 화면 (Step 0) ========== */}
+        {step === 0 && (
+          <div className="home-screen">
+            {/* 환영 섹션 */}
+            <div className="welcome-section">
+              <h2>주식 포트폴리오 백테스팅에 오신 것을 환영합니다! 🎉</h2>
+              <p>과거 데이터로 포트폴리오 성과를 시뮬레이션하고 최적의 투자 전략을 찾아보세요.</p>
+              <button onClick={startNewBacktest} className="button large">
+                새로운 백테스트 시작하기 🚀
+              </button>
+            </div>
+            
+            {/* 랭킹 보드 */}
+            <div className="ranking-board">
+              <h2>🏆 Top 3 포트폴리오</h2>
+              <p className="ranking-subtitle">연평균 수익률 기준</p>
+              
+              {rankingsLoading ? (
+                <div className="loading-text">로딩 중...</div>
+              ) : rankings.length === 0 ? (
+                <div className="empty-rankings">
+                  <p>아직 등록된 백테스트 결과가 없습니다.</p>
+                  <p>첫 번째 포트폴리오를 만들어보세요! 🚀</p>
+                </div>
+              ) : (
+                <div className="ranking-list">
+                  {rankings.map((portfolio, index) => (
+                    <div 
+                      key={portfolio._id}
+                      className={`ranking-item rank-${index + 1}`}
+                      onClick={() => setSelectedPortfolioId(portfolio._id)}
+                    >
+                      <div className="ranking-medal">
+                        {getMedalEmoji(index)}
+                      </div>
+                      
+                      <div className="ranking-info">
+                        <div className="ranking-name">
+                          {portfolio.portfolioName}
+                        </div>
+                        <div className="ranking-date">
+                          {new Date(portfolio.createdAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                      
+                      <div className="ranking-performance">
+                        <div className="performance-value">
+                          {parseFloat(portfolio.performance.annualizedReturn).toFixed(2)}%
+                        </div>
+                        <div className="performance-label">
+                          연평균 수익률
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ========== Step 1: 포트폴리오 기본 정보 ========== */}
         {step === 1 && (
           <div className="card">
             <h2>1️⃣ 포트폴리오 기본 정보</h2>
@@ -189,7 +363,7 @@ function App() {
           </div>
         )}
 
-        {/* Step 2: 종목 선택 */}
+        {/* ========== Step 2: 종목 선택 ========== */}
         {step === 2 && (
           <div className="card">
             <h2>2️⃣ 주식 종목 선택</h2>
@@ -249,7 +423,7 @@ function App() {
           </div>
         )}
 
-        {/* Step 3: 비중 설정 */}
+        {/* ========== Step 3: 비중 설정 ========== */}
         {step === 3 && (
           <div className="card">
             <h2>3️⃣ 종목별 비중 설정</h2>
@@ -291,7 +465,7 @@ function App() {
           </div>
         )}
 
-        {/* Step 4: 백테스트 기간 설정 */}
+        {/* ========== Step 4: 백테스트 기간 설정 ========== */}
         {step === 4 && (
           <div className="card">
             <h2>4️⃣ 백테스트 기간 설정</h2>
@@ -341,7 +515,7 @@ function App() {
           </div>
         )}
 
-        {/* Step 5: 결과 */}
+        {/* ========== Step 5: 결과 ========== */}
         {step === 5 && backtestResult && (
           <div className="card result">
             <h2>5️⃣ 백테스트 결과</h2>
@@ -420,26 +594,136 @@ function App() {
               ))}
             </div>
 
-            <button 
-              onClick={() => {
-                setStep(1);
-                setPortfolioName('');
-                setHoldings([]);
-                setBacktestResult(null);
-              }}
-              className="button"
-            >
+            <button onClick={resetBacktest} className="button">
               새로운 백테스트 시작
             </button>
           </div>
         )}
 
-        {/* 로딩 */}
+        {/* ========== 로딩 스피너 ========== */}
         {loading && (
           <div className="loading-overlay">
             <div className="loading-content">
               <div className="spinner"></div>
               <p>백테스트 실행 중...</p>
+            </div>
+          </div>
+        )}
+
+        {/* ========== 포트폴리오 상세 모달 ========== */}
+        {selectedPortfolioId && (
+          <div className="modal-overlay" onClick={closeModal}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <button className="modal-close" onClick={closeModal}>✕</button>
+              
+              {modalLoading ? (
+                <div className="modal-loading">
+                  <div className="spinner"></div>
+                  <p>로딩 중...</p>
+                </div>
+              ) : portfolioDetail ? (
+                <div className="portfolio-detail">
+                  <h2>{portfolioDetail.portfolioName}</h2>
+                  <p className="detail-date">
+                    {new Date(portfolioDetail.createdAt).toLocaleDateString()} 생성
+                  </p>
+
+                  {/* 성과 지표 */}
+                  <div className="detail-section">
+                    <h3>📊 성과 지표</h3>
+                    <div className="metrics-grid">
+                      <div className="metric-item">
+                        <span className="metric-label">총 수익률</span>
+                        <span className={`metric-value ${portfolioDetail.performance.totalReturn >= 0 ? 'positive' : 'negative'}`}>
+                          {parseFloat(portfolioDetail.performance.totalReturn).toFixed(2)}%
+                        </span>
+                      </div>
+                      <div className="metric-item">
+                        <span className="metric-label">연평균 수익률</span>
+                        <span className={`metric-value ${portfolioDetail.performance.annualizedReturn >= 0 ? 'positive' : 'negative'}`}>
+                          {parseFloat(portfolioDetail.performance.annualizedReturn).toFixed(2)}%
+                        </span>
+                      </div>
+                      <div className="metric-item">
+                        <span className="metric-label">샤프 비율</span>
+                        <span className="metric-value">
+                          {parseFloat(portfolioDetail.performance.sharpeRatio).toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="metric-item">
+                        <span className="metric-label">최대 낙폭</span>
+                        <span className="metric-value negative">
+                          -{parseFloat(portfolioDetail.performance.maxDrawdown).toFixed(2)}%
+                        </span>
+                      </div>
+                      <div className="metric-item">
+                        <span className="metric-label">변동성</span>
+                        <span className="metric-value">
+                          {parseFloat(portfolioDetail.performance.volatility).toFixed(2)}%
+                        </span>
+                      </div>
+                      <div className="metric-item">
+                        <span className="metric-label">승률</span>
+                        <span className="metric-value">
+                          {parseFloat(portfolioDetail.performance.winRate).toFixed(2)}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 포트폴리오 구성 */}
+                  <div className="detail-section">
+                    <h3>💼 포트폴리오 구성</h3>
+                    <div className="holdings-detail">
+                      {portfolioDetail.holdings.map(holding => (
+                        <div key={holding.ticker} className="holding-detail-item">
+                          <span className="holding-ticker">{holding.ticker}</span>
+                          <span className="holding-name">{holding.name}</span>
+                          <span className="holding-weight">{holding.weight}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 백테스트 설정 */}
+                  <div className="detail-section">
+                    <h3>⚙️ 백테스트 설정</h3>
+                    <div className="settings-detail">
+                      <div className="setting-item">
+                        <span>기간:</span>
+                        <strong>
+                          {new Date(portfolioDetail.settings.startDate).toLocaleDateString()} ~ {' '}
+                          {new Date(portfolioDetail.settings.endDate).toLocaleDateString()}
+                        </strong>
+                      </div>
+                      <div className="setting-item">
+                        <span>초기 투자금:</span>
+                        <strong>{portfolioDetail.settings.initialCapital.toLocaleString()}원</strong>
+                      </div>
+                      {portfolioDetail.performance.finalAmount && (
+                        <>
+                          <div className="setting-item">
+                            <span>최종 자산:</span>
+                            <strong className={portfolioDetail.performance.profit >= 0 ? 'positive' : 'negative'}>
+                              {parseInt(portfolioDetail.performance.finalAmount).toLocaleString()}원
+                            </strong>
+                          </div>
+                          <div className="setting-item">
+                            <span>수익금:</span>
+                            <strong className={portfolioDetail.performance.profit >= 0 ? 'positive' : 'negative'}>
+                              {parseInt(portfolioDetail.performance.profit).toLocaleString()}원
+                            </strong>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="modal-error">
+                  <p>포트폴리오를 불러올 수 없습니다.</p>
+                </div>
+              )}
             </div>
           </div>
         )}
