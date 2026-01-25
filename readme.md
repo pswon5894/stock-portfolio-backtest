@@ -1,5 +1,6 @@
 https://pswon5894.github.io/stock-portfolio-backtest/
 배포 깃페이지 + render(초기 구동 콜드 스립 깨울 때만 느림)
+https://stock-portfolio-backtest.onrender.com
 15분간 미사용시 콜드 슬립, 깨어나는데 30초정도 걸림
 
 # 프로젝트 작동 방식 설명

@@ -10,7 +10,7 @@ body {
 
 .App {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0066CC 0%, #0047AB 100%);
 }
 
 /* Header */
@@ -132,7 +132,7 @@ body {
 /* Button */
 .button {
   padding: 15px 30px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0066CC 0%, #00A3FF 100% );
   color: white;
   border: none;
   border-radius: 10px;

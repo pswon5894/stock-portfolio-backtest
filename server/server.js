@@ -1,4 +1,4 @@
-// // server/server.js
+// server/server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -102,8 +102,8 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`\n🚀 서버가 시작되었습니다!`);
-  console.log(`📍 주소: http://localhost:${PORT}`);
+  console.log(`\n 서버가 시작되었습니다!`);
+  console.log(` 주소: http://localhost:${PORT}`);
   console.log(`\n사용 가능한 엔드포인트:`);
   console.log(`  - GET  http://localhost:${PORT}/`);
   console.log(`  - GET  http://localhost:${PORT}/api/stocks`);
