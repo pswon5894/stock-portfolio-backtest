@@ -47,7 +47,8 @@ function App() {
 
   // ==================== 서버 연결 테스트 ====================
   useEffect(() => {
-    fetch('http://localhost:5000/')
+    // fetch('http://localhost:5000/')
+    fetch('https://stock-portfolio-backtest.onrender.com')
       .then(res => res.json())
       .then(data => {
         setServerStatus('✅ 연결됨');
@@ -67,7 +68,7 @@ function App() {
   const fetchRankings = async () => {
     setRankingsLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/backtest/rankings?limit=3');
+      const response = await fetch('https://stock-portfolio-backtest.onrender.com/api/backtest/rankings?limit=3');
       if (response.ok) {
         const data = await response.json();
         setRankings(data);
@@ -90,7 +91,7 @@ function App() {
   const fetchPortfolioDetail = async (portfolioId) => {
     setModalLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/backtest/results/${portfolioId}`);
+      const response = await fetch(`https://stock-portfolio-backtest.onrender.com/api/backtest/results/${portfolioId}`);
       if (response.ok) {
         const data = await response.json();
         setPortfolioDetail(data);
@@ -154,7 +155,7 @@ function App() {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost:5000/api/backtest/run', {
+      const response = await fetch('https://stock-portfolio-backtest.onrender.com/api/backtest/run', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

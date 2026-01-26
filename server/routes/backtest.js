@@ -4,6 +4,31 @@ const router = express.Router();
 const backtestService = require('../services/backtestService');
 const BacktestResult = require('../models/BacktestResult');
 
+// 랭킹 조회 엔드포인트 (추가)
+router.get('/rankings', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 3;
+    
+    console.log(` Top ${limit} 랭킹 조회 요청`);
+    
+    const topResults = await BacktestResult.find({ isPublic: true })
+      .sort({ 'performance.annualizedReturn': -1 })
+      .limit(limit)
+      .select('portfolioName performance.annualizedReturn performance.totalReturn createdAt')
+      .lean();
+    
+    console.log(` ${topResults.length}개 랭킹 결과 반환`);
+    
+    res.json(topResults);
+  } catch (error) {
+    console.error(' 랭킹 조회 오류:', error);
+    res.status(500).json({ 
+      error: '랭킹을 불러올 수 없습니다',
+      message: error.message 
+    });
+  }
+});
+
 // 백테스트 실행 및 저장
 router.post('/run', async (req, res) => {
   try {
@@ -37,7 +62,7 @@ router.post('/run', async (req, res) => {
     // 백테스트 실행
     const result = await backtestService.runBacktest(portfolioData);
     
-    // ✅ MongoDB에 결과 저장
+    //  MongoDB에 결과 저장
     const savedResult = new BacktestResult({
       portfolioName: portfolio.name,
       holdings: portfolio.holdings,
@@ -55,7 +80,7 @@ router.post('/run', async (req, res) => {
     // console.log('Data to Save:', JSON.stringify(savedResult.toObject(), null, 2));
     
     await savedResult.save();
-    console.log(`💾 백테스트 결과 저장 완료 (ID: ${savedResult._id})`);
+    console.log(` 백테스트 결과 저장 완료 (ID: ${savedResult._id})`);
 
     // 저장 후 전체 결과 가져오기 (annualizedReturn 기준 내림차순)
     const results = await BacktestResult.find()
