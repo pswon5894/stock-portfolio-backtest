@@ -49,7 +49,7 @@ class BacktestService {
         }
       };
 
-      console.log('\n✅ 백테스트 완료!');
+      console.log('\n 백테스트 완료!');
       console.log(`총 수익률: ${performance.totalReturn}%`);
       console.log(`연환산 수익률: ${performance.annualizedReturn}%`);
       

@@ -158,7 +158,7 @@ function App() {
     setLoading(true);
     
     try {
-      const response = await fetch(`${serverUrl}api/backtest/run`, {
+      const response = await fetch(`${serverUrl}/api/backtest/run`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
