@@ -9,9 +9,11 @@ function RankingBoard({ onSelectPortfolio }) {
     fetchRankings();
   }, []);
 
+  const serverUrl = 'https://stock-portfolio-backtest.onrender.com'
+
   const fetchRankings = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/backtest/rankings?limit=3');
+      const response = await fetch(`${serverUrl}/api/backtest/rankings?limit=3`);
       if (response.ok) {
         const data = await response.json();
         setRankings(data);

@@ -10,7 +10,6 @@ const portfolioSchema = new mongoose.Schema({
     weight: Number // 비중 (%)
   }],
   initialCapital: { type: Number, default: 10000000 },
-  rebalancePeriod: { type: String, enum: ['monthly', 'quarterly', 'yearly'] },
   startDate: Date,
   endDate: Date,
   createdAt: { type: Date, default: Date.now }

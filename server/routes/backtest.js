@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const backtestService = require('../services/backtestService');
 const BacktestResult = require('../models/BacktestResult');
+const Portfolio = require('../models/Portfolio');
 
 // 랭킹 조회 엔드포인트 (추가)
 router.get('/rankings', async (req, res) => {
@@ -56,13 +57,30 @@ router.post('/run', async (req, res) => {
     };
     
     console.log('\n' + '='.repeat(50));
-    console.log('📨 백테스트 요청 받음');
+    console.log('백테스트 요청 받음');
     console.log('='.repeat(50));
+
+    // 포트폴리오 먼저 저장 (또는 업데이트)
+    let savedPortfolio;
+    try {
+      savedPortfolio = new Portfolio({
+        name: portfolio.name,
+        holdings: portfolio.holdings,
+        initialCapital: portfolio.initialCapital,
+        startDate: new Date(startDate),
+        endDate: new Date(endDate)
+      });
+      await savedPortfolio.save();
+      console.log(`포트폴리오 저장 완료 (ID: ${savedPortfolio._id})`);
+    } catch (error) {
+      console.log(' 포트폴리오 저장 중 오류:', error.message);
+      // 포트폴리오 저장 실패해도 백테스트는 계속 진행
+    }
     
     // 백테스트 실행
     const result = await backtestService.runBacktest(portfolioData);
     
-    //  MongoDB에 결과 저장
+    //  MongoDB에 백테스트 결과 저장
     const savedResult = new BacktestResult({
       portfolioName: portfolio.name,
       holdings: portfolio.holdings,
