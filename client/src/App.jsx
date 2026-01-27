@@ -31,8 +31,8 @@ function App() {
   ]);
   
   // 백테스트 설정
-  const [startDate, setStartDate] = useState('2020-01-01');
-  const [endDate, setEndDate] = useState('2023-12-31');
+  const [startDate, setStartDate] = useState('2022-01-01');
+  const [endDate, setEndDate] = useState('2025-12-31');
   
   // 결과 및 로딩
   const [backtestResult, setBacktestResult] = useState(null);
@@ -46,11 +46,9 @@ function App() {
   const [modalLoading, setModalLoading] = useState(false);
 
   const serverUrl = 'https://stock-portfolio-backtest.onrender.com'
-  // const serverUrl = 'http://localhost:5000/'
 
   // ==================== 서버 연결 테스트 ====================
   useEffect(() => {
-    // fetch('http://localhost:5000/')
     fetch(`${serverUrl}`)
       .then(res => res.json())
       .then(data => {

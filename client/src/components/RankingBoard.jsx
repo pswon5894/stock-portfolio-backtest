@@ -10,7 +10,6 @@ function RankingBoard({ onSelectPortfolio }) {
   }, []);
 
   const serverUrl = 'https://stock-portfolio-backtest.onrender.com'
-  // const serverUrl = 'http://localhost:5000/'
 
   const fetchRankings = async () => {
     try {

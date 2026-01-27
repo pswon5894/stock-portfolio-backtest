@@ -70,7 +70,7 @@ class StockService {
         
         // 최대 범위로 데이터 가져오기 (캐싱용)
         const maxStartDate = new Date();
-        maxStartDate.setFullYear(maxStartDate.getFullYear() - 5); // 5년치
+        maxStartDate.setFullYear(maxStartDate.getFullYear() - 7); // 7년치
         
         const historicalData = await this.fetchStockDataFromAPI(
           ticker, 
