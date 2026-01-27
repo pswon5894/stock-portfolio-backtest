@@ -3,7 +3,15 @@ const mongoose = require('mongoose');
 
 const backtestResultSchema = new mongoose.Schema({
   // portfolioId: { type: mongoose.Schema.Types.ObjectId, ref: 'Portfolio' },
-  name: { type: String, required: true },
+  portfolioName: { type: String, required: true },
+
+  // 보유 종목
+  holdings: [{
+    ticker: String,
+    name: String,
+    weight: Number
+  }],
+
   performance: {
     totalReturn: Number,
     annualizedReturn: Number,
