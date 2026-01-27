@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const backtestResultSchema = new mongoose.Schema({
   // portfolioId: { type: mongoose.Schema.Types.ObjectId, ref: 'Portfolio' },
   portfolioName: { type: String, required: true },
+  isPublic: { type: Boolean, default: true },
 
   // 보유 종목
   holdings: [{
