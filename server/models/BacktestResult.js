@@ -2,7 +2,8 @@
 const mongoose = require('mongoose');
 
 const backtestResultSchema = new mongoose.Schema({
-  portfolioId: { type: mongoose.Schema.Types.ObjectId, ref: 'Portfolio' },
+  // portfolioId: { type: mongoose.Schema.Types.ObjectId, ref: 'Portfolio' },
+  name: { type: String, required: true },
   performance: {
     totalReturn: Number,
     annualizedReturn: Number,

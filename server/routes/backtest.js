@@ -3,14 +3,13 @@ const express = require('express');
 const router = express.Router();
 const backtestService = require('../services/backtestService');
 const BacktestResult = require('../models/BacktestResult');
-const Portfolio = require('../models/Portfolio');
 
-// 랭킹 조회 엔드포인트 (추가)
+// 상위 랭킹 조회 (연평균 수익률 기준)
 router.get('/rankings', async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 3;
     
-    console.log(` Top ${limit} 랭킹 조회 요청`);
+    console.log(`Top ${limit} 랭킹 조회 요청`);
     
     const topResults = await BacktestResult.find({ isPublic: true })
       .sort({ 'performance.annualizedReturn': -1 })
@@ -60,22 +59,22 @@ router.post('/run', async (req, res) => {
     console.log('백테스트 요청 받음');
     console.log('='.repeat(50));
 
-    // 포트폴리오 먼저 저장 (또는 업데이트)
-    let savedPortfolio;
-    try {
-      savedPortfolio = new Portfolio({
-        name: portfolio.name,
-        holdings: portfolio.holdings,
-        initialCapital: portfolio.initialCapital,
-        startDate: new Date(startDate),
-        endDate: new Date(endDate)
-      });
-      await savedPortfolio.save();
-      console.log(`포트폴리오 저장 완료 (ID: ${savedPortfolio._id})`);
-    } catch (error) {
-      console.log(' 포트폴리오 저장 중 오류:', error.message);
-      // 포트폴리오 저장 실패해도 백테스트는 계속 진행
-    }
+    // // 포트폴리오 먼저 저장 (또는 업데이트)
+    // let savedPortfolio;
+    // try {
+    //   savedPortfolio = new Portfolio({
+    //     name: portfolio.name,
+    //     holdings: portfolio.holdings,
+    //     initialCapital: portfolio.initialCapital,
+    //     startDate: new Date(startDate),
+    //     endDate: new Date(endDate)
+    //   });
+    //   await savedPortfolio.save();
+    //   console.log(`포트폴리오 저장 완료 (ID: ${savedPortfolio._id})`);
+    // } catch (error) {
+    //   console.log(' 포트폴리오 저장 중 오류:', error.message);
+    //   // 포트폴리오 저장 실패해도 백테스트는 계속 진행
+    // }
     
     // 백테스트 실행
     const result = await backtestService.runBacktest(portfolioData);
