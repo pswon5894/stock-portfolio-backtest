@@ -48,8 +48,8 @@ function App() {
   const [portfolioDetail, setPortfolioDetail] = useState(null);
   const [modalLoading, setModalLoading] = useState(false);
 
-  // const serverUrl = 'https://stock-portfolio-backtest.onrender.com'
-  const serverUrl = 'http://localhost:5000'
+  const serverUrl = 'https://stock-portfolio-backtest.onrender.com'
+  // const serverUrl = 'http://localhost:5000'
 
   // ==================== 서버 연결 테스트 ====================
   useEffect(() => {
