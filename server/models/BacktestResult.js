@@ -18,7 +18,10 @@ const backtestResultSchema = new mongoose.Schema({
     annualizedReturn: Number,
     sharpeRatio: Number,
     maxDrawdown: Number,
-    volatility: Number
+    volatility: Number,
+    winRate: Number,
+    finalAmount: Number,
+    profit: Number
   },
   equityCurve: [{
     date: Date,

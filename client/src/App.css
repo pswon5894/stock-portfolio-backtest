@@ -562,3 +562,9 @@ body {
   justify-content: center;      /* 가로 중앙 정렬 (space-between, flex-start 등) */
   gap: 10%;                    /* 요소 사이 간격 */
 }
+.modal-overlay{
+  padding: 15px 30px;
+  background: rgb(234, 234, 234);
+  border: none;
+  border-radius: 10px;
+}

@@ -51,19 +51,16 @@ function RankingBoard({ rankings, rankingsLoading, onSelectPortfolio }) {
               <div className="ranking-name">
                 {portfolio.portfolioName}
               </div>
-              <div className="ranking-date">
-                {new Date(portfolio.createdAt).toLocaleDateString()}
-              </div>
             </div>
             
             <div className="ranking-performance">
+              <div className="performance-label">
+                연평균 수익률
+              </div>
               <div className="performance-value">
                {portfolio.performance?.annualizedReturn
                   ? `${parseFloat(portfolio.performance.annualizedReturn).toFixed(2)}%`
                   : 'N/A'}
-              </div>
-              <div className="performance-label">
-                연평균 수익률
               </div>
             </div>
           </div>
