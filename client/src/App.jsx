@@ -5,6 +5,14 @@ import RankingBoard from './components/RankingBoard';
 import BacktestResults from './components/BacktestResults';
 
 function App() {
+
+  const API_URL = process.env.REACT_APP_API_URL;
+
+  fetch(`${API_URL}/users`)
+    .then(res => res.json())
+    .then(data => console.log(data));
+
+
   // ==================== 상태 관리 ====================
   const [step, setStep] = useState(0); // 0: 홈, 1-5: 백테스트 단계
   const [serverStatus, setServerStatus] = useState('확인 중...');
@@ -48,12 +56,12 @@ function App() {
   const [portfolioDetail, setPortfolioDetail] = useState(null);
   const [modalLoading, setModalLoading] = useState(false);
 
-  const serverUrl = 'https://stock-portfolio-backtest.onrender.com'
+  // const serverUrl = 'https://stock-portfolio-backtest.onrender.com'
   // const serverUrl = 'http://localhost:5000'
 
   // ==================== 서버 연결 테스트 ====================
   useEffect(() => {
-    fetch(`${serverUrl}`)
+    fetch(`${API_URL}`)
       .then(res => res.json())
       .then(data => {
         setServerStatus('✅ 연결됨');
@@ -73,7 +81,7 @@ function App() {
   const fetchRankings = async () => {
     setRankingsLoading(true);
     try {
-      const response = await fetch(`${serverUrl}/api/backtest/rankings?limit=3`);
+      const response = await fetch(`${API_URL}/api/backtest/rankings?limit=3`);
       if (response.ok) {
         const data = await response.json();
         setRankings(data);
@@ -96,7 +104,7 @@ function App() {
   const fetchPortfolioDetail = async (portfolioId) => {
     setModalLoading(true);
     try {
-      const response = await fetch(`${serverUrl}/api/backtest/results/${portfolioId}`);
+      const response = await fetch(`${API_URL}/api/backtest/results/${portfolioId}`);
       if (response.ok) {
         const data = await response.json();
         // 데이터 정규화: settings가 없으면 빈 객체로 설정
@@ -165,7 +173,7 @@ function App() {
     setLoading(true);
     
     try {
-      const response = await fetch(`${serverUrl}/api/backtest/run`, {
+      const response = await fetch(`${API_URL}/api/backtest/run`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
