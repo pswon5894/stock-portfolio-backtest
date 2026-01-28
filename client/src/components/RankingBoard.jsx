@@ -1,30 +1,6 @@
-// src/components/RankingBoard.jsx
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-function RankingBoard({ onSelectPortfolio }) {
-  const [rankings, setRankings] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchRankings();
-  }, []);
-
-  const serverUrl = 'https://stock-portfolio-backtest.onrender.com'
-
-  const fetchRankings = async () => {
-    try {
-      const response = await fetch(`${serverUrl}/api/backtest/rankings?limit=3`);
-      if (response.ok) {
-        const data = await response.json();
-        setRankings(data);
-      }
-    } catch (error) {
-      console.error('랭킹 조회 실패:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+function RankingBoard({ rankings, rankingsLoading, onSelectPortfolio }) {
   const getMedalEmoji = (rank) => {
     switch(rank) {
       case 0: return '🥇';
@@ -34,7 +10,7 @@ function RankingBoard({ onSelectPortfolio }) {
     }
   };
 
-  if (loading) {
+  if (rankingsLoading) {
     return (
       <div className="ranking-board">
         <h2>🏆 Top 3 포트폴리오</h2>
@@ -82,7 +58,9 @@ function RankingBoard({ onSelectPortfolio }) {
             
             <div className="ranking-performance">
               <div className="performance-value">
-                {parseFloat(portfolio.performance.annualizedReturn).toFixed(2)}%
+               {portfolio.performance?.annualizedReturn
+                  ? `${parseFloat(portfolio.performance.annualizedReturn).toFixed(2)}%`
+                  : 'N/A'}
               </div>
               <div className="performance-label">
                 연평균 수익률

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import RankingBoard from './components/RankingBoard';
 
 function App() {
   // ==================== 상태 관리 ====================
@@ -45,8 +46,8 @@ function App() {
   const [portfolioDetail, setPortfolioDetail] = useState(null);
   const [modalLoading, setModalLoading] = useState(false);
 
-  const serverUrl = 'https://stock-portfolio-backtest.onrender.com'
-  // const serverUrl = 'http://localhost:5000'
+  // const serverUrl = 'https://stock-portfolio-backtest.onrender.com'
+  const serverUrl = 'http://localhost:5000'
 
   // ==================== 서버 연결 테스트 ====================
   useEffect(() => {
@@ -96,7 +97,12 @@ function App() {
       const response = await fetch(`${serverUrl}/api/backtest/results/${portfolioId}`);
       if (response.ok) {
         const data = await response.json();
-        setPortfolioDetail(data);
+        // 데이터 정규화: settings가 없으면 빈 객체로 설정
+        const normalizedData = {
+          ...data,
+          settings: data.settings || data.backtest?.settings || {}
+        };
+        setPortfolioDetail(normalizedData);
       }
     } catch (error) {
       console.error('포트폴리오 조회 실패:', error);
@@ -227,21 +233,20 @@ function App() {
     setHoldings([]);
     setBacktestResult(null);
   };
-
-  // ==================== 모달 닫기 ====================
-  const closeModal = () => {
-    setSelectedPortfolioId(null);
-    setPortfolioDetail(null);
+  // ==================== 안전한 데이터 접근 헬퍼 ====================
+  const getSettingValue = (key, defaultValue = null) => {
+    if (portfolioDetail && portfolioDetail.settings) {
+      return portfolioDetail.settings[key] || defaultValue;
+    }
+    return defaultValue;
   };
 
-  // ==================== 헬퍼 함수 ====================
-  const getMedalEmoji = (rank) => {
-    switch(rank) {
-      case 0: return '🥇';
-      case 1: return '🥈';
-      case 2: return '🥉';
-      default: return '';
+  const getPerformanceValue = (key, defaultValue = '-') => {
+    if (portfolioDetail && portfolioDetail.performance) {
+      const value = portfolioDetail.performance[key];
+      return value !== undefined && value !== null ? value : defaultValue;
     }
+    return defaultValue;
   };
 
   // ==================== 렌더링 ====================
@@ -283,53 +288,13 @@ function App() {
                 새로운 백테스트 시작하기 🚀
               </button>
             </div>
-            
-            {/* 랭킹 보드 */}
-            <div className="ranking-board">
-              <h2>🏆 Top 3 포트폴리오</h2>
-              <p className="ranking-subtitle">연평균 수익률 기준</p>
-              
-              {rankingsLoading ? (
-                <div className="loading-text">로딩 중...</div>
-              ) : rankings.length === 0 ? (
-                <div className="empty-rankings">
-                  <p>아직 등록된 백테스트 결과가 없습니다.</p>
-                  <p>첫 번째 포트폴리오를 만들어보세요! 🚀</p>
-                </div>
-              ) : (
-                <div className="ranking-list">
-                  {rankings.map((portfolio, index) => (
-                    <div 
-                      key={portfolio._id}
-                      className={`ranking-item rank-${index + 1}`}
-                      onClick={() => setSelectedPortfolioId(portfolio._id)}
-                    >
-                      <div className="ranking-medal">
-                        {getMedalEmoji(index)}
-                      </div>
-                      
-                      <div className="ranking-info">
-                        <div className="ranking-name">
-                          {portfolio.portfolioName}
-                        </div>
-                        <div className="ranking-date">
-                          {new Date(portfolio.createdAt).toLocaleDateString()}
-                        </div>
-                      </div>
-                      
-                      <div className="ranking-performance">
-                        <div className="performance-value">
-                          {parseFloat(portfolio.performance.annualizedReturn).toFixed(2)}%
-                        </div>
-                        <div className="performance-label">
-                          연평균 수익률
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+
+            {/* RankingBoard 컴포넌트 사용 */}
+            <RankingBoard 
+              rankings={rankings}
+              rankingsLoading={rankingsLoading}
+              onSelectPortfolio={setSelectedPortfolioId}
+            />
           </div>
         )}
 
@@ -615,9 +580,9 @@ function App() {
 
         {/* ========== 포트폴리오 상세 모달 ========== */}
         {selectedPortfolioId && (
-          <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-overlay" onClick={() => setSelectedPortfolioId(null)}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              <button className="modal-close" onClick={closeModal}>✕</button>
+              <button className="modal-close" onClick={() => setSelectedPortfolioId(null)}>✕</button>
               
               {modalLoading ? (
                 <div className="modal-loading">
@@ -626,9 +591,12 @@ function App() {
                 </div>
               ) : portfolioDetail ? (
                 <div className="portfolio-detail">
-                  <h2>{portfolioDetail.portfolioName}</h2>
+                  <h2>{portfolioDetail.portfolioName || '포트폴리오'}</h2>
                   <p className="detail-date">
-                    {new Date(portfolioDetail.createdAt).toLocaleDateString()} 생성
+                    {portfolioDetail.createdAt 
+                      ? new Date(portfolioDetail.createdAt).toLocaleDateString('ko-KR')
+                      : '생성일 미상'
+                    }
                   </p>
 
                   {/* 성과 지표 */}
@@ -637,38 +605,39 @@ function App() {
                     <div className="metrics-grid">
                       <div className="metric-item">
                         <span className="metric-label">총 수익률</span>
-                        <span className={`metric-value ${portfolioDetail.performance.totalReturn >= 0 ? 'positive' : 'negative'}`}>
-                          {parseFloat(portfolioDetail.performance.totalReturn).toFixed(2)}%
+                        <span className={`metric-value ${parseFloat(getPerformanceValue('totalReturn', 0)) >= 0 ? 'positive' : 'negative'}`}>
+                          {parseFloat(getPerformanceValue('totalReturn', '0')).toFixed(2)}%
                         </span>
                       </div>
                       <div className="metric-item">
                         <span className="metric-label">연평균 수익률</span>
-                        <span className={`metric-value ${portfolioDetail.performance.annualizedReturn >= 0 ? 'positive' : 'negative'}`}>
-                          {parseFloat(portfolioDetail.performance.annualizedReturn).toFixed(2)}%
+                        <span className={`metric-value ${parseFloat(getPerformanceValue('annualizedReturn', 0)) >= 0 ? 'positive' : 'negative'}`}>
+                          {parseFloat(getPerformanceValue('annualizedReturn', '0')).toFixed(2)}%
                         </span>
                       </div>
                       <div className="metric-item">
                         <span className="metric-label">샤프 비율</span>
                         <span className="metric-value">
-                          {parseFloat(portfolioDetail.performance.sharpeRatio).toFixed(2)}
+                          {parseFloat(getPerformanceValue('sharpeRatio', '0')).toFixed(2)}
                         </span>
                       </div>
                       <div className="metric-item">
                         <span className="metric-label">최대 낙폭</span>
                         <span className="metric-value negative">
-                          -{parseFloat(portfolioDetail.performance.maxDrawdown).toFixed(2)}%
+                          -{parseFloat(getPerformanceValue('maxDrawdown', '0')).toFixed(2)}%
                         </span>
                       </div>
                       <div className="metric-item">
                         <span className="metric-label">변동성</span>
                         <span className="metric-value">
-                          {parseFloat(portfolioDetail.performance.volatility).toFixed(2)}%
+                          {parseFloat(getPerformanceValue('volatility', '0')).toFixed(2)}%
                         </span>
                       </div>
+                      
                       <div className="metric-item">
                         <span className="metric-label">승률</span>
                         <span className="metric-value">
-                          {parseFloat(portfolioDetail.performance.winRate).toFixed(2)}%
+                          {parseFloat(getPerformanceValue('winRate', '0')).toFixed(2)}%
                         </span>
                       </div>
                     </div>
@@ -678,13 +647,17 @@ function App() {
                   <div className="detail-section">
                     <h3>💼 포트폴리오 구성</h3>
                     <div className="holdings-detail">
-                      {portfolioDetail.holdings.map(holding => (
-                        <div key={holding.ticker} className="holding-detail-item">
-                          <span className="holding-ticker">{holding.ticker}</span>
-                          <span className="holding-name">{holding.name}</span>
-                          <span className="holding-weight">{holding.weight}%</span>
-                        </div>
-                      ))}
+                      {portfolioDetail.holdings && portfolioDetail.holdings.length > 0 ? (
+                        portfolioDetail.holdings.map(holding => (
+                          <div key={holding.ticker} className="holding-detail-item">
+                            <span className="holding-ticker">{holding.ticker}</span>
+                            <span className="holding-name">{holding.name}</span>
+                            <span className="holding-weight">{holding.weight}%</span>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="empty-message">포트폴리오 구성 정보가 없습니다.</p>
+                      )}
                     </div>
                   </div>
 
@@ -695,30 +668,42 @@ function App() {
                       <div className="setting-item">
                         <span>기간:</span>
                         <strong>
-                          {new Date(portfolioDetail.settings.startDate).toLocaleDateString()} ~ {' '}
-                          {new Date(portfolioDetail.settings.endDate).toLocaleDateString()}
+                          {getSettingValue('startDate') 
+                            ? new Date(getSettingValue('startDate')).toLocaleDateString() 
+                            : '미설정'
+                          }
+                          {' '} ~ {' '}
+                          {getSettingValue('endDate')
+                            ? new Date(getSettingValue('endDate')).toLocaleDateString()
+                            : '미설정'
+                          }
                         </strong>
                       </div>
                       <div className="setting-item">
                         <span>초기 투자금:</span>
-                        <strong>{portfolioDetail.settings.initialCapital.toLocaleString()}원</strong>
+                        <strong>
+                          {getSettingValue('initialCapital') 
+                            ? parseInt(getSettingValue('initialCapital')).toLocaleString() + '원'
+                            : '미설정'
+                          }
+                        </strong>
                       </div>
-                      {portfolioDetail.performance.finalAmount && (
+                      {getPerformanceValue('finalAmount') && getPerformanceValue('finalAmount') !== '-' ? (
                         <>
                           <div className="setting-item">
                             <span>최종 자산:</span>
-                            <strong className={portfolioDetail.performance.profit >= 0 ? 'positive' : 'negative'}>
-                              {parseInt(portfolioDetail.performance.finalAmount).toLocaleString()}원
+                            <strong className={getPerformanceValue('profit', 0) >= 0 ? 'positive' : 'negative'}>
+                              {parseInt(getPerformanceValue('finalAmount')).toLocaleString()}원
                             </strong>
                           </div>
                           <div className="setting-item">
                             <span>수익금:</span>
-                            <strong className={portfolioDetail.performance.profit >= 0 ? 'positive' : 'negative'}>
-                              {parseInt(portfolioDetail.performance.profit).toLocaleString()}원
+                            <strong className={getPerformanceValue('profit', 0) >= 0 ? 'positive' : 'negative'}>
+                              {parseInt(getPerformanceValue('profit')).toLocaleString()}원
                             </strong>
                           </div>
                         </>
-                      )}
+                      ) : null}
                     </div>
                   </div>
                 </div>
