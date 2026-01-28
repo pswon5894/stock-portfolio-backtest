@@ -30,7 +30,7 @@
       "react-app/jest"
     ]
   },
-  "homepage": "https://pswon5894.github.io/stock-portfolio-backtest",
+  "homepage": ".",
   "browserslist": {
     "production": [
       ">0.2%",
