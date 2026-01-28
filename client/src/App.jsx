@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+// import PortfolioDetailModal from './components/PortfolioDetailModal';
 import RankingBoard from './components/RankingBoard';
+import BacktestResults from './components/BacktestResults';
 
 function App() {
   // ==================== 상태 관리 ====================
@@ -483,90 +485,13 @@ function App() {
           </div>
         )}
 
-        {/* ========== Step 5: 결과 ========== */}
-        {step === 5 && backtestResult && (
-          <div className="card result">
-            <h2>5️⃣ 백테스트 결과</h2>
-            
-            <div className="result-header">
-              <h3>{backtestResult.portfolioName}</h3>
-              <p>{backtestResult.settings.startDate} ~ {backtestResult.settings.endDate}</p>
-            </div>
-
-            <div className="metrics">
-              <div className="metric">
-                <div className="metric-label">총 수익률</div>
-                <div className={`metric-value ${backtestResult.performance.totalReturn >= 0 ? 'positive' : 'negative'}`}>
-                  {backtestResult.performance.totalReturn}%
-                </div>
-              </div>
-
-              <div className="metric">
-                <div className="metric-label">연환산 수익률</div>
-                <div className={`metric-value ${backtestResult.performance.annualizedReturn >= 0 ? 'positive' : 'negative'}`}>
-                  {backtestResult.performance.annualizedReturn}%
-                </div>
-              </div>
-
-              <div className="metric">
-                <div className="metric-label">샤프 비율</div>
-                <div className="metric-value">{backtestResult.performance.sharpeRatio}</div>
-              </div>
-
-              <div className="metric">
-                <div className="metric-label">최대 낙폭</div>
-                <div className="metric-value negative">
-                  -{backtestResult.performance.maxDrawdown}%
-                </div>
-              </div>
-
-              <div className="metric">
-                <div className="metric-label">변동성</div>
-                <div className="metric-value">{backtestResult.performance.volatility}%</div>
-              </div>
-
-              <div className="metric">
-                <div className="metric-label">승률</div>
-                <div className="metric-value">{backtestResult.performance.winRate}%</div>
-              </div>
-            </div>
-
-            {backtestResult.performance.finalAmount && (
-              <div className="amount-summary">
-                <div className="amount-item">
-                  <span>초기 투자금:</span>
-                  <strong>{initialCapital.toLocaleString()}원</strong>
-                </div>
-                <div className="amount-item">
-                  <span>최종 자산:</span>
-                  <strong className={backtestResult.performance.profit >= 0 ? 'positive' : 'negative'}>
-                    {parseInt(backtestResult.performance.finalAmount).toLocaleString()}원
-                  </strong>
-                </div>
-                <div className="amount-item">
-                  <span>수익금:</span>
-                  <strong className={backtestResult.performance.profit >= 0 ? 'positive' : 'negative'}>
-                    {parseInt(backtestResult.performance.profit).toLocaleString()}원
-                  </strong>
-                </div>
-              </div>
-            )}
-
-            <div className="holdings-summary">
-              <h3>포트폴리오 구성</h3>
-              {backtestResult.holdings.map(h => (
-                <div key={h.ticker} className="holding-row">
-                  <span>{h.ticker} - {h.name}</span>
-                  <span className="weight-badge">{h.weight}%</span>
-                </div>
-              ))}
-            </div>
-
-            <button onClick={resetBacktest} className="button">
-              새로운 백테스트 시작
-            </button>
-          </div>
-        )}
+                {/* ========== Step 5: 결과 ========== */}
+                {step === 5 && (
+                  <BacktestResults 
+                    backtestResult={backtestResult}
+                    resetBacktest={resetBacktest}
+                  />
+                )}
 
         {/* ========== 로딩 스피너 ========== */}
         {loading && (
