@@ -126,10 +126,7 @@ function PortfolioDetailModal({ show, portfolioDetail, modalLoading, onClose }) 
                       <div className="setting-item">
                         <span>초기 투자금:</span>
                         <strong>
-                          {getSettingValue('initialCapital') 
-                            ? parseInt(getSettingValue('initialCapital')).toLocaleString() + '원'
-                            : '미설정'
-                          }
+                          {(parseInt(getPerformanceValue('finalAmount'))-parseInt(getPerformanceValue('profit'))).toLocaleString()}원
                         </strong>
                       </div>
                       {getPerformanceValue('finalAmount') && getPerformanceValue('finalAmount') !== '-' ? (
