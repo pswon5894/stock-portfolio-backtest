@@ -184,27 +184,10 @@ function App() {
         throw new Error(error.error || '서버 응답 오류');
       }
     } catch (error) {
-      console.log('서버 연결 실패, 모의 데이터 사용:', error);
+      console.log('서버 연결 실패, 재시작 바람니다:', error);
       
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const mockResult = {
-        performance: {
-          totalReturn: (Math.random() * 100 - 20).toFixed(2),
-          annualizedReturn: (Math.random() * 30 - 5).toFixed(2),
-          sharpeRatio: (Math.random() * 2).toFixed(2),
-          maxDrawdown: (Math.random() * 30).toFixed(2),
-          volatility: (Math.random() * 40 + 10).toFixed(2),
-          winRate: (Math.random() * 60 + 30).toFixed(2),
-        },
-        portfolioName,
-        holdings,
-        settings: { startDate, endDate, initialCapital }
-      };
-      
-      setBacktestResult(mockResult);
       setStep(5);
-      alert('⚠️ 서버에서 실제 데이터를 가져올 수 없어 모의 데이터를 표시합니다.\n에러: ' + error.message);
+      alert('⚠️ 서버가 깨어나는 중일수도 있습니다. 웹페이지를 다시 시작해주세요\n에러: ' + error.message);
     } finally {
       setLoading(false);
     }
