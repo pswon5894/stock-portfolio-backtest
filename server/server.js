@@ -25,7 +25,7 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5000',
   'https://pswon5894.github.io',
-  'https://stock-portfolio-backtest.vercel.app'
+  'https://stock-portfolio-backtest'
 ];
 
 const corsOptions = {
