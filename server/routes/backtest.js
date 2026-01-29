@@ -9,7 +9,7 @@ router.get('/rankings', async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 3;
     
-    console.log(`Top ${limit} 랭킹 조회 요청`);
+    // console.log(`Top ${limit} 랭킹 조회 요청`);
     
     const topResults = await BacktestResult.find({ isPublic: true })
       .sort({ 'performance.annualizedReturn': -1 })
@@ -17,7 +17,7 @@ router.get('/rankings', async (req, res) => {
       .select('portfolioName performance.annualizedReturn performance.totalReturn createdAt')
       .lean();
     
-    console.log(` ${topResults.length}개 랭킹 결과 반환`);
+    // console.log(` ${topResults.length}개 랭킹 결과 반환`);
     
     res.json(topResults);
   } catch (error) {
@@ -58,23 +58,6 @@ router.post('/run', async (req, res) => {
     console.log('\n' + '='.repeat(50));
     console.log('백테스트 요청 받음');
     console.log('='.repeat(50));
-
-    // // 포트폴리오 먼저 저장 (또는 업데이트)
-    // let savedPortfolio;
-    // try {
-    //   savedPortfolio = new Portfolio({
-    //     name: portfolio.name,
-    //     holdings: portfolio.holdings,
-    //     initialCapital: portfolio.initialCapital,
-    //     startDate: new Date(startDate),
-    //     endDate: new Date(endDate)
-    //   });
-    //   await savedPortfolio.save();
-    //   console.log(`포트폴리오 저장 완료 (ID: ${savedPortfolio._id})`);
-    // } catch (error) {
-    //   console.log(' 포트폴리오 저장 중 오류:', error.message);
-    //   // 포트폴리오 저장 실패해도 백테스트는 계속 진행
-    // }
     
     // 백테스트 실행
     const result = await backtestService.runBacktest(portfolioData);
@@ -90,7 +73,8 @@ router.post('/run', async (req, res) => {
         startDate: new Date(startDate),
         endDate: new Date(endDate),
         initialCapital: portfolio.initialCapital
-      }
+      },
+      isPublic: true
     });
     
     // console.log('--- Saving Backtest Result ---');
@@ -121,26 +105,6 @@ router.post('/run', async (req, res) => {
     res.status(500).json({ 
       error: error.message || '백테스트 실행 중 오류가 발생했습니다' 
     });
-  }
-});
-
-// 🏆 상위 랭킹 조회 (연평균 수익률 기준)
-router.get('/rankings', async (req, res) => {
-  try {
-    const limit = parseInt(req.query.limit) || 3;
-    
-    const topResults = await BacktestResult.find({ isPublic: true })
-      .sort({ 'performance.annualizedReturn': -1 })  // 내림차순 정렬
-      .limit(limit)
-      .select('portfolioName performance.annualizedReturn performance.totalReturn createdAt')
-      .lean();
-    
-    console.log(`📊 상위 ${limit}개 랭킹 조회`);
-    
-    res.json(topResults);
-  } catch (error) {
-    console.error('❌ 랭킹 조회 오류:', error);
-    res.status(500).json({ error: '랭킹을 불러올 수 없습니다' });
   }
 });
 

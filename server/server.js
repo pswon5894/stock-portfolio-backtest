@@ -24,7 +24,6 @@ if (process.env.NODE_ENV === 'production') {
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5000',
-  // 'https://pswon5894.github.io/stock-portfolio-backtest/'
   'https://pswon5894.github.io',
   'https://stock-portfolio-backtest.vercel.app'
 ];
@@ -61,12 +60,6 @@ const username = encodeURIComponent(config.DB_USERNAME);
 const password = encodeURIComponent(config.DB_PASSWORD);
 const dbName = config.DB_NAME || 'stock-backtest';
 
-// MongoDB 연결 // 로컬 서버에 접속할 경우
-// const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/stock-backtest';
-// 클라우드 서버에 접속할 때
-// mongoose.connect('mongodb://username:password@host:port/database?options...');
-// mongodb+srv://pswon5894_db_user:<db_password>@cluster0.9tbvkbq.mongodb.net/?appName=Cluster0
-// const MONGODB_URI = process.env.MONGODB_URI || 'pswon5894_db_user:<db_password>@cluster0.9tbvkbq.mongodb.net/?appName=Cluster0'
 const MONGODB_URI = `mongodb+srv://${username}:${password}@cluster0.9tbvkbq.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 
 mongoose.connect(MONGODB_URI, {

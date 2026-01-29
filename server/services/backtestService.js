@@ -6,7 +6,7 @@ class BacktestService {
   async runBacktest(portfolioData) {
     const { holdings, initialCapital, startDate, endDate } = portfolioData;
     
-    console.log('\n🚀 백테스트 시작');
+    console.log('\n백테스트 시작');
     console.log(`포트폴리오: ${portfolioData.name || '무제'}`);
     console.log(`기간: ${startDate} ~ ${endDate}`);
     console.log(`초기 자본: ${initialCapital.toLocaleString()}원`);
@@ -14,7 +14,7 @@ class BacktestService {
     try {
       // 1. 모든 종목 데이터 가져오기
       const tickers = holdings.map(h => h.ticker);
-      console.log(`\n📊 종목 데이터 수집 중... (${tickers.join(', ')})`);
+      console.log(`\n종목 데이터 수집 중... (${tickers.join(', ')})`);
       
       const stockData = await stockService.getMultipleStocksData(
         tickers,
@@ -29,11 +29,11 @@ class BacktestService {
       }
 
       // 2. 백테스트 실행 (Buy & Hold)
-      console.log('\n💰 포트폴리오 시뮬레이션 중...');
+      console.log('\n포트폴리오 시뮬레이션 중...');
       const simulation = this.simulateBuyAndHold(stockData, holdings, initialCapital);
 
       // 3. 성과 지표 계산
-      console.log('\n📈 성과 지표 계산 중...');
+      console.log('\n성과 지표 계산 중...');
       const performance = this.calculatePerformance(simulation.equityCurve, initialCapital);
 
       // 4. 결과 저장

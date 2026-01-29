@@ -35,12 +35,14 @@ function App() {
   const [portfolioDetail, setPortfolioDetail] = useState(null);
   const [modalLoading, setModalLoading] = useState(false);
 
-  const serverUrl = 'https://stock-portfolio-backtest.onrender.com'
-  // const serverUrl = 'http://localhost:5000'
+  // 개발 환경에서는 http://localhost:5000/api, 프로덕션 환경에서는 배포된 서버 주소 사용
+  const API_BASE_URL = process.env.NODE_ENV === 'production'
+    ? 'https://stock-portfolio-backtest.onrender.com/'
+    : 'http://localhost:5000';
 
   // ==================== 서버 연결 테스트 ====================
   useEffect(() => {
-    fetch(`${serverUrl}`)
+    fetch(`${API_BASE_URL}`)
       .then(res => res.json())
       .then(data => {
         setServerStatus('✅ 연결됨');
@@ -60,7 +62,7 @@ function App() {
   const fetchRankings = async () => {
     setRankingsLoading(true);
     try {
-      const response = await fetch(`${serverUrl}/api/backtest/rankings?limit=3`);
+      const response = await fetch(`${API_BASE_URL}/api/backtest/rankings?limit=3`);
       if (response.ok) {
         const data = await response.json();
         setRankings(data);
@@ -83,7 +85,7 @@ function App() {
   const fetchPortfolioDetail = async (portfolioId) => {
     setModalLoading(true);
     try {
-      const response = await fetch(`${serverUrl}/api/backtest/results/${portfolioId}`);
+      const response = await fetch(`${API_BASE_URL}/api/backtest/results/${portfolioId}`);
       if (response.ok) {
         const data = await response.json();
         // 데이터 정규화: settings가 없으면 빈 객체로 설정
@@ -152,7 +154,7 @@ function App() {
     setLoading(true);
     
     try {
-      const response = await fetch(`${serverUrl}/api/backtest/run`, {
+      const response = await fetch(`${API_BASE_URL}/api/backtest/run`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -207,9 +209,7 @@ function App() {
       setLoading(false);
     }
   };
-
   
-
   // ==================== 리셋 ====================
   const resetBacktest = () => {
     setStep(1);
