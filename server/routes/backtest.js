@@ -87,7 +87,7 @@ router.post('/run', async (req, res) => {
     const results = await BacktestResult.find()
       .sort({ 'performance.annualizedReturn': -1 });
 
-    // 5개 초과하면 삭제 해서 4개 보관
+    // 5개 부터 삭제 해서 4개 보관
     if (results.length > 4) {
       const toDelete = results.slice(4); // 5번째 부터 삭제 해서 4개 보관
       const ids = toDelete.map(r => r._id);
