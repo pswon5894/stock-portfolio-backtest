@@ -7,7 +7,7 @@ Failed to compile
  creat-react-app build 시 나타날 수 있는 에러로, React는 warning을 build 에러로 처리하기 때문
 
  발생 원인
-ESLint를 적용하면서 warn으로 설정한 규칙이 있었고, warning 상태인 코드들을 수정하지 않은 채 build를 했더니 에러가 발생
+ESLint를 적용하면서 warnings으로 설정한 규칙이 있었고, warning 상태인 코드들을 수정하지 않은 채 build를 했더니 에러가 발생
 
 해결 방법
 에러 메시지에서 process.env.CI = true 이므로 warning을 error로 간주한다고 알려주었기 때문에 CI를 false 처리
