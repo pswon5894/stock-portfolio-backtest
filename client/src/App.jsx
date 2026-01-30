@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import { useThemeStore } from "./theme/themeStore";
+import ThemeToggle from "./theme/ThemeToggle";
+
 import availableStocks from './data/stocks'
 import PortfolioDetailModal from './components/PortfolioDetailModal';
 import RankingBoard from './components/RankingBoard';
 import BacktestResults from './components/BacktestResults';
 
 function App() {
+
+  const darkMode = useThemeStore((state) => state.darkMode);
+
   // ==================== 상태 관리 ====================
   const [step, setStep] = useState(0); // 0: 홈, 1-5: 백테스트 단계
   const [serverStatus, setServerStatus] = useState('확인 중...');
@@ -216,7 +222,9 @@ function App() {
   
   // ==================== 렌더링 ====================
   return (
-    <div className="App">
+    // <div className="App">
+    <div className={darkMode ? "app dark" : "App"}>
+       <ThemeToggle />
       {/* ========== 헤더 ========== */}
       <header className="App-header">
         <h1>📈 주식 포트폴리오 백테스터</h1>
@@ -232,7 +240,13 @@ function App() {
             ))}
           </div>
         )}
-        
+
+        {/* <div className={darkMode ? "app dark" : "app light"}>
+          <h1>Zustand 다크 모드 예제</h1>
+          <ThemeToggle />
+        </div> */}
+
+
         {/* 홈 버튼 */}
         {step > 0 && (
           <button onClick={() => setStep(0)} className="home-button">

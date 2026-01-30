@@ -568,3 +568,23 @@ body {
   border: none;
   border-radius: 10px;
 }
+
+.app.light {
+  background-color: white;
+  color: black;
+}
+.app.dark {
+  background-color: #121212;
+  color: white;
+  min-height: 100vh;
+}
+.btn-light {
+  background-color: #f0f0f0;
+  color: #000;
+  border: none;
+}
+.btn-dark {
+  background-color: #333;
+  color: #fff;
+  border: none;
+}
