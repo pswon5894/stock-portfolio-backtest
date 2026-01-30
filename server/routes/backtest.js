@@ -87,9 +87,9 @@ router.post('/run', async (req, res) => {
     const results = await BacktestResult.find()
       .sort({ 'performance.annualizedReturn': -1 });
 
-    // 5개 초과하면 나머지 삭제
-    if (results.length > 10) {
-      const toDelete = results.slice(4); // 5번째 이후
+    // 5개 초과하면 삭제 해서 4개 보관
+    if (results.length > 4) {
+      const toDelete = results.slice(4); // 5번째 부터 삭제 해서 4개 보관
       const ids = toDelete.map(r => r._id);
       await BacktestResult.deleteMany({ _id: { $in: ids } });
       console.log(`🗑 annualizedReturn 낮은 결과 ${ids.length}개 삭제`);
