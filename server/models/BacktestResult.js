@@ -13,6 +13,12 @@ const backtestResultSchema = new mongoose.Schema({
     weight: Number
   }],
 
+  settings: {
+    startDate: { type: Date, required: true },  // 최초 거래일 (오래된 데이터)
+    endDate: { type: Date, required: true },    // 최종 거래일 (최신 데이터)
+    initialCapital: { type: Number, required: true }
+  },
+
   performance: {
     totalReturn: Number,
     annualizedReturn: Number,
