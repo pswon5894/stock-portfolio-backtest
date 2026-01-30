@@ -36,12 +36,12 @@ function PortfolioDetailModal({ show, portfolioDetail, modalLoading, onClose }) 
               ) : portfolioDetail ? (
                 <div className="portfolio-detail">
                   <h2>{portfolioDetail.portfolioName || '포트폴리오'}</h2>
-                  <p className="detail-date">
+                  {/* <p className="detail-date">
                     {portfolioDetail.createdAt 
                       ? new Date(portfolioDetail.createdAt).toLocaleDateString('ko-KR')
                       : '생성일 미상'
                     }
-                  </p>
+                  </p> */}
 
                   {/* 성과 지표 */}
                   <div className="detail-section">
