@@ -43,7 +43,7 @@ function App() {
 
   // 개발 환경에서는 http://localhost:5000/api, 프로덕션 환경에서는 배포된 서버 주소 사용
   const API_BASE_URL = process.env.NODE_ENV === 'production'
-    ? 'https://stock-portfolio-backtest.onrender.com/'
+    ? 'https://stock-portfolio-backtest.onrender.com'
     : 'http://localhost:5000';
 
   // ==================== 서버 연결 테스트 ====================
