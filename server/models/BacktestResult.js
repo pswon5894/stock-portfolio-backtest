@@ -40,7 +40,7 @@ const backtestResultSchema = new mongoose.Schema({
     shares: Number,
     price: Number
   }],
-  runDate: { type: Date, default: Date.now }
+  // runDate: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('BacktestResult', backtestResultSchema);

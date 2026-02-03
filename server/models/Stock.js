@@ -15,7 +15,7 @@ const stockSchema = new mongoose.Schema({
     volume: Number,
     adjustedClose: Number
   }],
-  lastUpdated: { type: Date, default: Date.now }
+  // lastUpdated: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('Stock', stockSchema);

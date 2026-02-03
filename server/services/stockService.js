@@ -56,17 +56,9 @@ class StockService {
       // 1. DB에서 먼저 찾기
       let stock = await Stock.findOne({ ticker: ticker.toUpperCase() });
       
-      // 2. DB에 없거나 데이터가 오래되었으면 API에서 가져오기
-      const now = new Date();
-      const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
-      
-      const needsUpdate = !stock || 
-                         !stock.lastUpdated || 
-                         stock.lastUpdated < threeDaysAgo ||
-                         stock.historicalData.length === 0;
-
-      if (needsUpdate) {
-        console.log(`🔄 ${ticker} 데이터 업데이트 필요`);
+      // 2. DB에 없으면 API에서 가져오기
+      if (!stock || !stock.historicalData || stock.historicalData.length === 0) {
+      console.log(`🔄 ${ticker} 데이터가 DB에 없음 → API 호출`);
         
         // 입력 기간 범위로 데이터 가져오기 (캐싱용)
         // 요청받은 시작일
@@ -79,7 +71,6 @@ class StockService {
         const historicalData = await this.fetchStockDataFromAPI(
           ticker, 
           cacheStartDate.toISOString().split('T')[0],
-          // new Date().toISOString().split('T')[0]
           endDate
         );
         

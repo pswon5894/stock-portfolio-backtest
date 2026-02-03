@@ -316,7 +316,7 @@ function App() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="종목명 또는 티커 검색..."
+                placeholder="종목명 또는 티커 검색...(예시 qqq, 나스닥, 애플, 넷플릭스, 구글, 엔비디아)"
                 className="input"
               />
             </div>
