@@ -263,7 +263,7 @@ function App() {
             <div className="welcome-section">
               <h2>주식 포트폴리오 백테스팅에 오신 것을 환영합니다! 🎉</h2>
               <p>과거 데이터로 포트폴리오 성과를 시뮬레이션하고 최적의 투자 전략을 찾아보세요.</p>
-              <button onClick={startNewBacktest} className="button large">
+              <button onClick={startNewBacktest} className={`button large ${darkMode ? 'dark' : ''}`}>
                 새로운 백테스트 시작하기 🚀
               </button>
             </div>

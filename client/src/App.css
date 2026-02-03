@@ -576,15 +576,28 @@ body {
 .app.dark {
   background-color: #121212;
   color: white;
+  /* filter: invert(1) hue-rotate(180deg) grayscale(0.2); */
   min-height: 100vh;
 }
 .btn-light {
   background-color: #f0f0f0;
   color: #000;
   border: none;
+  margin: 20px;
+  padding: 5px;
+  border-radius: 3px;
 }
 .btn-dark {
   background-color: #333;
   color: #fff;
   border: none;
+  margin: 20px;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+/* 다크모드 */
+.dark .button {
+  background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
+  color: #E5E7EB;
 }

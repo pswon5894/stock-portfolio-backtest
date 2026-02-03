@@ -54,7 +54,7 @@ app.get('/', (req, res) => {
     status: 'running',
     endpoints: {
       stocks: '/api/stocks',
-      portfolios: '/api/portfolios',
+      // portfolios: '/api/portfolios',
       backtest: '/api/backtest'
     }
   });
@@ -87,7 +87,7 @@ mongoose.connect(MONGODB_URI, {
 // API Routes
 try {
   app.use('/api/stocks', require('./routes/stocks'));
-  app.use('/api/portfolios', require('./routes/portfolios'));
+  // app.use('/api/portfolios', require('./routes/portfolios'));
   app.use('/api/backtest', require('./routes/backtest'));
 } catch (error) {
   console.log('⚠️  라우트 로딩 중 오류:', error.message);
@@ -106,7 +106,7 @@ app.listen(PORT, () => {
   console.log(`\n사용 가능한 엔드포인트:`);
   console.log(`  - GET  http://localhost:${PORT}/`);
   console.log(`  - GET  http://localhost:${PORT}/api/stocks`);
-  console.log(`  - POST http://localhost:${PORT}/api/portfolios`);
+  // console.log(`  - POST http://localhost:${PORT}/api/portfolios`);
   console.log(`  - POST http://localhost:${PORT}/api/backtest/run`);
   console.log(`\n서버를 중지하려면 Ctrl + C 를 누르세요\n`);
 });
