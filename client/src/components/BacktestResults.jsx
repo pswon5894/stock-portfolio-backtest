@@ -1,7 +1,9 @@
 // client/src/components/BacktestResults.jsx
 import React from 'react';
+import { useThemeStore } from "../theme/themeStore";
 
 function BacktestResults({ backtestResult, resetBacktest, initialCapital }) {
+  const darkMode = useThemeStore((state) => state.darkMode)
   if (!backtestResult) {
     return null; // 결과가 없으면 아무것도 렌더링하지 않음
   }
@@ -9,7 +11,7 @@ function BacktestResults({ backtestResult, resetBacktest, initialCapital }) {
   const { performance, portfolioName, holdings, settings } = backtestResult;
 
   return (
-    <div className="card result">
+    <div className={`card result ${darkMode ? 'dark' : ''}`}>
       <h2>5️⃣ 백테스트 결과</h2>
       
       <div className="result-header">

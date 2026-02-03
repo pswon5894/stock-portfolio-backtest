@@ -1,8 +1,6 @@
 import React from 'react';
 import { useThemeStore } from "../theme/themeStore";
 
-
-
 function RankingBoard({ rankings, rankingsLoading, onSelectPortfolio }) {
   const darkMode = useThemeStore((state) => state.darkMode);
   const getMedalEmoji = (rank) => {

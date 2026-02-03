@@ -1,3 +1,13 @@
+/* :root {
+  --bg-card: #eaeaea;
+  --text-primary: #111827;
+}
+
+.dark {
+  --bg-card: #1E293B;
+  --text-primary: #E5E7EB;
+} */
+
 * {
   margin: 0;
   padding: 0;
@@ -70,6 +80,14 @@ body {
 /* Card */
 .card {
   background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.3s ease-out;
+}
+
+.dark .card {
+  background: rgb(58, 64, 72);
   border-radius: 20px;
   padding: 40px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
@@ -372,11 +390,18 @@ body {
   border-radius: 10px;
 }
 
-.metric-label {
+.dark .metric {
+  text-align: center;
+  padding: 20px;
+  background: rgb(30, 41, 59);
+  border-radius: 10px;
+}
+
+/* .metric-label {
   color: #666;
   font-size: 0.9rem;
   margin-bottom: 8px;
-}
+} */
 
 .metric-value {
   font-size: 1.8rem;
@@ -400,12 +425,27 @@ body {
   margin-bottom: 20px;
 }
 
+.dark .amount-summary {
+  background: rgb(30, 41, 59);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+
 .amount-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid #e0e0e0;
+}
+.dark .amount-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgb(30, 41, 59);
 }
 
 .amount-item:last-child {
@@ -462,7 +502,12 @@ body {
   border-radius: 10px;
   margin-bottom: 20px;
 }
-
+.dark .holdings-summary {
+  background: rgb(30, 41, 59);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
 .holdings-summary h3 {
   color: #667eea;
   margin-bottom: 15px;
@@ -475,6 +520,14 @@ body {
   padding: 10px 0;
   border-bottom: 1px solid #e0e0e0;
 }
+.dark .holding-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgb(30, 41, 59);
+}
+
 
 .holding-row:last-child {
   border-bottom: none;
@@ -558,7 +611,7 @@ body {
   border-radius: 10px;
 }
 /* 다크모드 */
-.ranking-board.dark {
+.dark .ranking-board {
   background: rgb(30, 41, 59);   /* slate-800 느낌 */
   color: #E5E7EB;
 }
@@ -575,7 +628,7 @@ body {
   border-radius: 10px;
 }
 /* 다크모드 */
-.modal-overlay.dark {
+.dark .modal-overlay {
   background: rgb(15, 23, 42);   /* 더 진한 배경 */
   color: #E5E7EB;
 }
@@ -585,9 +638,9 @@ body {
   color: black;
 }
 .app.dark {
-  background-color: #121212;
+  background-color: #272727;
   color: white;
-  /* filter: invert(1) hue-rotate(180deg) grayscale(0.2); */
+  /* filter: invert(1) hue-rotate(180deg) grayscale(0.7); */
   min-height: 100vh;
 }
 .btn-light {
