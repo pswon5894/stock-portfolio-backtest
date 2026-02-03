@@ -227,7 +227,7 @@ function App() {
        <ThemeToggle />
       {/* ========== 헤더 ========== */}
       <header className="App-header">
-        <h1>📈 주식 포트폴리오 백테스터</h1>
+        <h1> 주식 포트폴리오 백테스터</h1>
         <p className="status">서버: {serverStatus}</p>
         
         {/* 진행 바 */}
@@ -244,7 +244,7 @@ function App() {
         {/* 홈 버튼 */}
         {step > 0 && (
           <button onClick={() => setStep(0)} className="home-button">
-            🏠 홈으로
+            홈으로
           </button>
         )}
       </header>
@@ -255,10 +255,10 @@ function App() {
           <div className="home-screen">
             {/* 환영 섹션 */}
             <div className="welcome-section">
-              <h2>주식 포트폴리오 백테스팅에 오신 것을 환영합니다! 🎉</h2>
+              <h2>주식 포트폴리오 백테스팅에 오신 것을 환영합니다!</h2>
               <p>과거 데이터로 포트폴리오 성과를 시뮬레이션하고 최적의 투자 전략을 찾아보세요.</p>
               <button onClick={startNewBacktest} className={`button large ${darkMode ? 'dark' : ''}`}>
-                새로운 백테스트 시작하기 🚀
+                새로운 백테스트 시작하기
               </button>
             </div>
 

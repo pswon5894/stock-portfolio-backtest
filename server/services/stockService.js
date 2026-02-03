@@ -52,62 +52,79 @@ class StockService {
 
   // MongoDB에서 데이터 조회 또는 API에서 가져오기
   async getStockData(ticker, startDate, endDate) {
-    try {
-      // 1. DB에서 먼저 찾기
-      let stock = await Stock.findOne({ ticker: ticker.toUpperCase() });
-      
-      // 2. DB에 없으면 API에서 가져오기
-      if (!stock || !stock.historicalData || stock.historicalData.length === 0) {
-      console.log(`🔄 ${ticker} 데이터가 DB에 없음 → API 호출`);
-        
-        // 입력 기간 범위로 데이터 가져오기 (캐싱용)
-        // 요청받은 시작일
-        const requestedStartDate = new Date(startDate);
-        
-        // 캐싱용 buffer (1년)
-        const cacheStartDate = new Date(requestedStartDate);
-        cacheStartDate.setFullYear(cacheStartDate.getFullYear() - 1); // buffer
-        
-        const historicalData = await this.fetchStockDataFromAPI(
-          ticker, 
-          cacheStartDate.toISOString().split('T')[0],
-          endDate
-        );
-        
-        // DB에 저장
-        stock = await Stock.findOneAndUpdate(
-          { ticker: ticker.toUpperCase() },
-          {
-            ticker: ticker.toUpperCase(),
-            name: ticker,
-            market: 'US',
-            historicalData,
-            lastUpdated: new Date()
-          },
-          { upsert: true, new: true }
-        );
-        
-        console.log(`💾 ${ticker} 데이터베이스 저장 완료`);
-      } else {
-        console.log(`✅ ${ticker} 캐시된 데이터 사용 (마지막 업데이트: ${stock.lastUpdated.toLocaleDateString()})`);
-      }
+  try {
+    const upperTicker = ticker.toUpperCase();
+    let stock = await Stock.findOne({ ticker: upperTicker });
 
-      // 3. 날짜 필터링
-      if (startDate && endDate) {
-        const filteredData = stock.historicalData.filter(d => {
-          const date = new Date(d.date);
-          return date >= new Date(startDate) && date <= new Date(endDate);
-        });
-        
-        console.log(`   - 필터링된 데이터: ${filteredData.length}일 (${startDate} ~ ${endDate})`);
-        return filteredData;
-      }
+    const requestedStart = new Date(startDate);
+    const requestedEnd = new Date(endDate);
 
-      return stock.historicalData;
-    } catch (error) {
-      throw new Error(`${ticker} 데이터 조회 실패: ${error.message}`);
+    let needRefetch = false;
+
+    if (stock && stock.historicalData && stock.historicalData.length > 0) {
+      const dbStart = new Date(stock.historicalData[0].date);
+      const dbEnd = new Date(
+        stock.historicalData[stock.historicalData.length - 1].date
+      );
+
+      // 요청한 기간이 DB 범위를 벗어나면 재호출
+      if (requestedStart < dbStart || requestedEnd > dbEnd) {
+        needRefetch = true;
+        console.log(`⚠️ ${ticker} DB 데이터 범위 부족`);
+      }
     }
+
+    // DB에 없거나 / 비어있거나 / 범위 부족하면 API 호출
+    if (!stock || !stock.historicalData?.length || needRefetch) {
+      console.log(`🔄 ${ticker} API에서 데이터 재요청`);
+
+      // buffer 1년
+      const cacheStartDate = new Date(requestedStart);
+      cacheStartDate.setFullYear(cacheStartDate.getFullYear() - 1);
+
+      const historicalData = await this.fetchStockDataFromAPI(
+        ticker,
+        cacheStartDate.toISOString().split('T')[0],
+        endDate
+      );
+
+      stock = await Stock.findOneAndUpdate(
+        { ticker: upperTicker },
+        {
+          ticker: upperTicker,
+          name: ticker,
+          market: 'US',
+          historicalData,
+        },
+        { upsert: true, new: true }
+      );
+
+      console.log(`💾 ${ticker} 데이터베이스 저장 완료`);
+    } else {
+      console.log(
+        `✅ ${ticker} 캐시 사용 (${stock.lastUpdated?.toLocaleDateString()})`
+      );
+    }
+
+    // 날짜 필터링
+    const filteredData = stock.historicalData.filter(d => {
+      const date = new Date(d.date);
+      return date >= requestedStart && date <= requestedEnd;
+    });
+
+    console.log(
+      `   - 필터링된 데이터: ${filteredData.length}일 (${startDate} ~ ${endDate})`
+    );
+
+    if (filteredData.length === 0) {
+      throw new Error('요청한 기간의 데이터가 없습니다');
+    }
+
+    return filteredData;
+  } catch (error) {
+    throw new Error(`${ticker} 데이터 조회 실패: ${error.message}`);
   }
+}
 
   // 여러 종목 데이터 한번에 가져오기
   async getMultipleStocksData(tickers, startDate, endDate) {

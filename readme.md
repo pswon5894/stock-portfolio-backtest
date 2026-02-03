@@ -13,7 +13,7 @@ vercel 배포 주소 + render(초기 구동 콜드 스립 깨울 때만 느림)
 
    * 클라이언트 (Client):
        * React: 사용자 인터페이스(UI)를 구축하기 위한 JavaScript 라이브러리.
-       * Axios/Fetch: 서버와 HTTP 통신을 하기 위한 라이브러리입니다. (client/src/App.jsx 내에서 직접 fetch 사용)
+       * Axios/Fetch: 서버와 HTTP 통신을 위한 라이브러리. (client/src/App.jsx 내에서 직접 fetch 사용)
        * zustand: 다크모드 테마 상태관리, 전역 상태관리 용이, localstorage 이용해서 테마상태 기억
    * 서버 (Server):
        * Node.js & Express: 서버를 구축하고 REST API를 만들기 위한 프레임워크.
@@ -36,13 +36,13 @@ vercel 배포 주소 + render(초기 구동 콜드 스립 깨울 때만 느림)
        * server/routes/backtest.js 라우터가 이 요청을 받아 backtestService.js의 runBacktest 함수를 호출.
 
    4. 과거 데이터 조회 (Server):
-       * backtestService는 stockService.js의 getStockData 함수를 호출하여 포트폴리오에 포함된 각 주식의 과거 데이터를 요청.
+       * backtestService는 `stockService.js`의 getStockData 함수를 호출하여 포트폴리오에 포함된 각 주식의 과거 데이터를 요청.
        * 캐싱(Caching) 로직: stockService는 먼저 내부 MongoDB 데이터베이스(Stock 모델)에 해당 주식 데이터가 있는지 확인.
            * 데이터가 있으면: DB에서 바로 데이터를 반환. (API 호출 최소화)
            * 데이터가 없으면: Yahoo Finance API를 통해 데이터를 가져와 DB에 저장한 후, 그 데이터를 반환.
 
    5. 백테스트 시뮬레이션 (Server):
-       * backtestService.js는 getStockData를 통해 얻은 과거 데이터를 사용하여 시뮬레이션.
+       * `backtestService.js`는 getStockData를 통해 얻은 과거 데이터를 사용하여 시뮬레이션.
        * 시뮬레이션이 끝나면 calculatePerformance 함수를 호출하여 최종 자산, 수익률(CAGR), 최대 하락률(MDD) 등 주요 성능 지표를 계산.
 
    6. 결과 저장 및 응답 (Server → Client):
@@ -50,20 +50,11 @@ vercel 배포 주소 + render(초기 구동 콜드 스립 깨울 때만 느림)
        * 저장된 결과는 다시 클라이언트(App.jsx)에게 HTTP 응답으로 전송.
 
    7. 결과 표시 (Client):
-       * 클라이언트의 App.jsx는 서버로부터 받은 백테스트 결과를 상태(state)에 저장.
+       * 클라이언트의 `App.jsx`는 서버로부터 받은 백테스트 결과를 상태(state)에 저장.
        * 이 데이터는 `BacktestResults` 컴포넌트를 통해 사용자에게 보기 쉽게 결과를 렌더링.
 
-## 4. 핵심 데이터 흐름: 백테스트 실행 과정
-
-사용자가 "백테스트 실행" 버튼을 클릭했을 때의 데이터 흐름은 다음과 같습니다.
 
 1.  **[Client]** React 앱이 사용자가 입력한 포트폴리오 정보(종목, 비중)와 기간 설정을 모아 JSON 객체를 만듬.
-2.  **[Client → Server]** `services/api.js`를 통해 이 JSON 객체를 담아 서버의 `POST /api/backtest/run` 엔드포인트로 HTTP 요청을 보냄.
-3.  **[Server]** `backtest.js` 라우터가 요청을 받아 `backtestService`의 `runBacktest` 함수를 호출.
-4.  **[Server]** `backtestService`는 포트폴리오에 포함된 모든 종목에 대해 `stockService`에게 과거 데이터를 요청.
-5.  **[Server/DB/API]** `stockService`는 각 종목에 대해 먼저 MongoDB 캐시를 확인. 데이터가 있으면 즉시 반환하고, 없으면 Yahoo Finance API에 데이터를 요청하여 가져온 후 DB에 캐싱하고 반환.
-6.  **[Server]** `backtestService`는 모든 종목의 데이터를 받은 후, 포트폴리오 가치를 계산.
-7.  **[Server]** 시뮬레이션 결과를 바탕으로 최종 수익률, MDD 등 다양한 성과 지표를 계산.
 8.  **[Server → Client]** 계산된 모든 결과 데이터를 JSON 형태로 클라이언트에 응답으로 보냄.
 
 ## 3. 클라이언트 (`client/`) 상세 구조
@@ -120,9 +111,9 @@ https://stock-portfolio-backtest.onrender.com
 
 * 다크 모드를 초기 부터 고려해야 했었다 초기에 고려했다면 통일된 css와 간단한 :root 를 이용해 색상으로 바꾸었을 것이다
 
-* 서버 부분에서 첫 모델 설계와 후기에 라우터 기능 설계과정에서 모델과 라우터가 합쳐지거나 필요 없어지게되어 수정하게되었다, 초기 모델을 너무 세세하게 나누어 기능 중복이 된 것 같다
+* 서버 부분에서 첫 모델 설계와 후기에 라우터 기능 설계과정에서 모델과 라우터가 합쳐지거나 필요 없어져, 수정하게됨, 초기 모델을 너무 세세하게 나누어 기능 중복이 된 것 같다
 
-* 긴 기간으로 백테스트를 하다보면 금액이 미묘하게 다른 경우가 있는데 그 경우는 병합에 의해서 주가 환산과정에서 소수점 자리수 인정부분 계산차이로 오차가 발생한다
+* 긴 기간으로 백테스트를 하다보면 금액이 미묘하게 다른 경우가 있는데, 그 경우는 병합에 의해서 주가 환산과정에서 소수점 자리수 인정부분 계산차이로 오차가 발생한다
 
 * 포트폴리오 모델이 필요할 줄 알았는데 결과적으로 백테스트 모델에 편입됨
 
