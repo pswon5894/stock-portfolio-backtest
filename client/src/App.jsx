@@ -241,12 +241,6 @@ function App() {
           </div>
         )}
 
-        {/* <div className={darkMode ? "app dark" : "app light"}>
-          <h1>Zustand 다크 모드 예제</h1>
-          <ThemeToggle />
-        </div> */}
-
-
         {/* 홈 버튼 */}
         {step > 0 && (
           <button onClick={() => setStep(0)} className="home-button">

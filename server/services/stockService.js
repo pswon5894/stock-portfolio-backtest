@@ -68,14 +68,19 @@ class StockService {
       if (needsUpdate) {
         console.log(`🔄 ${ticker} 데이터 업데이트 필요`);
         
-        // 최대 범위로 데이터 가져오기 (캐싱용)
-        const maxStartDate = new Date();
-        maxStartDate.setFullYear(maxStartDate.getFullYear() - 7); // 7년치
+        // 입력 기간 범위로 데이터 가져오기 (캐싱용)
+        // 요청받은 시작일
+        const requestedStartDate = new Date(startDate);
+        
+        // 캐싱용 buffer (1년)
+        const cacheStartDate = new Date(requestedStartDate);
+        cacheStartDate.setFullYear(cacheStartDate.getFullYear() - 1); // buffer
         
         const historicalData = await this.fetchStockDataFromAPI(
           ticker, 
-          maxStartDate.toISOString().split('T')[0],
-          new Date().toISOString().split('T')[0]
+          cacheStartDate.toISOString().split('T')[0],
+          // new Date().toISOString().split('T')[0]
+          endDate
         );
         
         // DB에 저장
