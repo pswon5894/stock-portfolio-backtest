@@ -557,6 +557,12 @@ body {
   border: none;
   border-radius: 10px;
 }
+/* 다크모드 */
+.ranking-board.dark {
+  background: rgb(30, 41, 59);   /* slate-800 느낌 */
+  color: #E5E7EB;
+}
+
 .ranking-list {
   display: flex;                /* Flexbox 활성화 */
   justify-content: center;      /* 가로 중앙 정렬 (space-between, flex-start 등) */
@@ -567,6 +573,11 @@ body {
   background: rgb(234, 234, 234);
   border: none;
   border-radius: 10px;
+}
+/* 다크모드 */
+.modal-overlay.dark {
+  background: rgb(15, 23, 42);   /* 더 진한 배경 */
+  color: #E5E7EB;
 }
 
 .app.light {

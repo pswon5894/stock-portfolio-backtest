@@ -1,6 +1,10 @@
 import React from 'react';
+import { useThemeStore } from "../theme/themeStore";
+
+
 
 function RankingBoard({ rankings, rankingsLoading, onSelectPortfolio }) {
+  const darkMode = useThemeStore((state) => state.darkMode);
   const getMedalEmoji = (rank) => {
     switch(rank) {
       case 0: return '🥇';
@@ -12,7 +16,7 @@ function RankingBoard({ rankings, rankingsLoading, onSelectPortfolio }) {
 
   if (rankingsLoading) {
     return (
-      <div className="ranking-board">
+      <div className={`ranking-board ${darkMode ? 'dark' : ''}`}>
         <h2>🏆 Top 3 포트폴리오</h2>
         <div className="loading-text">로딩 중...</div>
       </div>
@@ -21,7 +25,7 @@ function RankingBoard({ rankings, rankingsLoading, onSelectPortfolio }) {
 
   if (rankings.length === 0) {
     return (
-      <div className="ranking-board">
+      <div className={`ranking-board ${darkMode ? 'dark' : ''}`}>
         <h2>🏆 Top 3 포트폴리오</h2>
         <div className="empty-rankings">
           <p>아직 등록된 백테스트 결과가 없습니다.</p>
@@ -32,7 +36,7 @@ function RankingBoard({ rankings, rankingsLoading, onSelectPortfolio }) {
   }
 
   return (
-    <div className="ranking-board">
+    <div className={`ranking-board ${darkMode ? 'dark' : ''}`}>
       <h2>🏆 Top 3 포트폴리오</h2>
       <p className="ranking-subtitle">연평균 수익률 기준</p>
       
