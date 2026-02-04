@@ -15,7 +15,7 @@ const stockSchema = new mongoose.Schema({
     volume: Number,
     adjustedClose: Number
   }],
-  // lastUpdated: { type: Date, default: Date.now }
+  // lastUpdated: { type: Date, default: Date.now } //db 캐싱 여부 확인용(업데이트 여부로 캐싱 확인)
 });
 
 module.exports = mongoose.model('Stock', stockSchema);

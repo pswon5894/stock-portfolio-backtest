@@ -1,6 +1,5 @@
 // server/services/backtestService.js
 const stockService = require('./stockService');
-const BacktestResult = require('../models/BacktestResult');
 
 class BacktestService {
   async runBacktest(portfolioData) {
