@@ -36,7 +36,7 @@ function RankingBoard({ rankings, rankingsLoading, onSelectPortfolio }) {
   return (
     <div className={`ranking-board ${darkMode ? 'dark' : ''}`}>
       <h2>🏆 Top 3 포트폴리오</h2>
-      <p className="ranking-subtitle">연평균 수익률 기준</p>
+      <p className="ranking-subtitle">랭킹 종목을 클릭하여 상세정보를 확인하세요</p>
       
       <div className="ranking-list">
         {rankings.map((portfolio, index) => (
