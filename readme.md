@@ -14,7 +14,6 @@ vercel 배포 주소 + render(초기 구동 콜드 스립 깨울 때만 느림)
 
    * 클라이언트 (Client):
        * React: 사용자 인터페이스(UI)를 구축하기 위한 JavaScript 라이브러리.
-       * Axios/Fetch: 서버와 HTTP 통신을 위한 라이브러리. (client/src/App.jsx 내에서 직접 fetch 사용)
        * zustand: 다크모드 테마 상태관리, 전역 상태관리 용이, localstorage 이용해서 테마상태 기억
    * 서버 (Server):
        * Node.js & Express: 서버를 구축하고 REST API를 만들기 위한 프레임워크.
@@ -94,14 +93,13 @@ server/
 
 프론트엔드 vercel 배포
 https://stock-portfolio-backtest.vercel.app/
-vercel 배포 주소 + render(초기 구동 콜드 스립 깨울 때만 느림)
+vercel 배포 주소
 
 (깃허브 커밋하면 자동으로 업데이트 후 자동 빌드 및 배포)
 
-백엔드 render (초기 구동 느림,  장기 미사용시 서버를 깨워야해서, 무료 티어, 5분 콜드 슬립 있음)
+백엔드 render
 깃 허브 코드를 바탕으로 커밋을 하게되면 자동으로 업데이트 배포
 https://stock-portfolio-backtest.onrender.com
-15분간 미사용시 콜드 슬립, 깨어나는데 30초정도 걸림
 
 ## 6 후기, 추가 사항
 * 리액트 버전이 "^19.2.3"이라서 18버전을 넘어서 recoil을 사용할 수 없어서 zustand를 사용하여 다크모드 상태관리를 하였다
