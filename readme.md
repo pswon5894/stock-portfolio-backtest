@@ -8,18 +8,37 @@ vercel 배포 주소 + render(초기 구동 콜드 스립 깨울 때만 느림)
 클라이언트-서버 아키텍처를 기반으로 한 주식 포트폴리오 백테스팅 웹. 사용자가 웹 인터페이스(클라이언트)를 통해 포트폴리오를 구성하면,
 서버는 이 데이터를 받아 수익률을 계산하고 결과를 다시 클라이언트에 보여줌.
 
-## 1. 전체 아키텍처
+## 1. 프로젝트 구조
 
-주요 기술 스택
+```
+client/                                 # js, react, zustand
 
-   * 클라이언트 (Client):
-       * React: 사용자 인터페이스(UI)를 구축하기 위한 JavaScript 라이브러리.
-       * zustand: 다크모드 테마 상태관리, 전역 상태관리 용이, localstorage 이용해서 테마상태 기억
-   * 서버 (Server):
-       * Node.js & Express: 서버를 구축하고 REST API를 만들기 위한 프레임워크.
-       * MongoDB & Mongoose: 백테스트 결과와 주식 데이터를 저장하기 위한 NoSQL 데이터베이스. API에서 가져온 주식 데이터를 캐싱 및 저장
-   * api 데이터 소스:
-       * Yahoo Finance API: stockService를 통해 주식의 데이터를 가져오는 외부 API.
+└── src/                      
+    ├── App.jsx                         # 애플리케이션의 핵심 컴포넌트로, 전체 UI 흐름, 상태 관리, 백엔드 API 호출 로직을 포함
+    ├── index.js                        # React 앱을 DOM에 마운트하는 진입점
+    ├── components/           
+    │   ├── BacktestResults.jsx         # 백테스트 결과 표시
+    │   ├── PortfolioDetailModal.jsx    # 포트폴리오 상세 모달
+    │   └── RankingBoard.jsx            # 백테스트 랭킹 보드
+    ├── data/                
+    │   └── stocks.js                   # 주식 종목 데이터 제공
+    └── theme/                
+        ├── themeStore.js               # zustand 다크 모드 상태 관리관리, localstorage 이용해서 테마상태 기억
+        └── ThemeToggle.js              # 테마 토글 UI 컴포넌트
+
+server/
+
+├── server.js                 # node.js express, mongoDB, Yahoo Finance API
+├── models/                   
+│   ├── BacktestResult.js     # 백테스트 결과 모델
+│   └── Stock.js              # 캐싱된 주식 데이터 모델
+├── routes/                   
+│   ├── backtest.js           # 백테스트 관련 라우트
+│   └── stocks.js             # 주식 데이터 관련 라우트
+└── services/                 
+    ├── backtestService.js    # 백테스팅 시뮬레이션 및 계산 로직 (성과 지표, 연평균 수익률 등)
+    └── stockService.js       # Yahoo Finance API 주식 데이터 조회 및 MongoDB에 캐싱 로직으로 API 호출을 줄임
+```
 
 
 ## 2. 핵심 실행 흐름
@@ -53,55 +72,8 @@ vercel 배포 주소 + render(초기 구동 콜드 스립 깨울 때만 느림)
        * 클라이언트의 `App.jsx`는 서버로부터 받은 백테스트 결과를 상태(state)에 저장.
        * 이 데이터는 `BacktestResults` 컴포넌트를 통해 사용자에게 보기 쉽게 결과를 렌더링.
 
-## 3. 클라이언트 (`client/`) 상세 구조
 
-```
-client/
-
-└── src/                      
-    ├── App.jsx                     # 애플리케이션의 핵심 컴포넌트로, 전체 UI 흐름, 상태 관리, 백엔드 API 호출 로직을 포함
-    ├── index.js                    # React 앱을 DOM에 마운트하는 진입점
-    ├── components/           
-    │   ├── BacktestResults.jsx     # 백테스트 결과 표시
-    │   ├── PortfolioDetailModal.jsx# 포트폴리오 상세 모달
-    │   └── RankingBoard.jsx        # 백테스트 랭킹 보드
-    ├── data/                
-    │   └── stocks.js                # 주식 종목 데이터 제공
-    └── theme/                
-        ├── themeStore.js           # Zustand를 사용한 # 테마(다크 모드 등) 관련 로직 및 상태 관리
-        └── ThemeToggle.js          # 테마 변경 토글 UI 컴포넌트
-```
-
-## 4. 서버 (`server/`) 상세 구조
-
-```
-server/
-
-├── server.js                 #Express 웹을 초기화하고, 미들웨어 설정, (MongoDB) 연결, API 라우트 등록 등 서버의 전반적인 설정을 담당하는 진입점
-├── models/                   
-│   ├── BacktestResult.js     # 백테스트 결과 모델
-│   └── Stock.js              # 캐싱된 주식 데이터 모델
-├── routes/                   
-│   ├── backtest.js           # 백테스트 관련 라우트
-│   └── stocks.js             # 주식 데이터 관련 라우트
-└── services/                 
-    ├── backtestService.js    # 백테스팅 시뮬레이션 및 계산 로직 (성과 지표, 연평균 수익률 등)
-    └── stockService.js       # 주식 데이터 조회 및 MongoDB에 캐싱 로직으로 API 호출을 줄임
-```
-
-## 5 배포
-
-프론트엔드 vercel 배포
-https://stock-portfolio-backtest.vercel.app/
-vercel 배포 주소
-
-(깃허브 커밋하면 자동으로 업데이트 후 자동 빌드 및 배포)
-
-백엔드 render
-깃 허브 코드를 바탕으로 커밋을 하게되면 자동으로 업데이트 배포
-https://stock-portfolio-backtest.onrender.com
-
-## 6 후기, 추가 사항
+## 3. 후기, 추가 사항
 * 리액트 버전이 "^19.2.3"이라서 18버전을 넘어서 recoil을 사용할 수 없어서 zustand를 사용하여 다크모드 상태관리를 하였다
 
 * 다크 모드를 초기 부터 고려해야 했었다 초기에 고려했다면 통일된 css와 간단한 :root 를 이용해 색상으로 바꾸었을 것이다
