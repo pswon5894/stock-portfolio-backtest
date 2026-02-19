@@ -1,3 +1,4 @@
+// components/StockSelector.js
 import React from "react";
 
 const StockSelector = ({

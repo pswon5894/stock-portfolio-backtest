@@ -17,11 +17,13 @@ client/                                 # js, react, zustand
     ├── App.jsx                         # 애플리케이션의 핵심 컴포넌트로, 전체 UI 흐름, 상태 관리, 백엔드 API 호출 로직을 포함
     ├── index.js                        # React 앱을 DOM에 마운트하는 진입점
     ├── components/           
+    │   ├── BacktestPeriod.js           # 백테스트 기간 설정
     │   ├── BacktestResults.jsx         # 백테스트 결과 표시
     │   ├── PortfolioDetailModal.jsx    # 포트폴리오 상세 모달
-    │   └── RankingBoard.jsx            # 백테스트 랭킹 보드
+    │   ├── RankingBoard.jsx            # 백테스트 랭킹 보드
+    │   └── StockSelector.jsx           # 주식 종목 선택
     ├── data/                
-    │   └── stocks.js                   # 주식 종목 데이터 제공
+    │   └── stocks.js                   # 주식 종목명 제공
     └── theme/                
         ├── themeStore.js               # zustand 다크 모드 상태 관리관리, localstorage 이용해서 테마상태 기억
         └── ThemeToggle.js              # 테마 토글 UI 컴포넌트
