@@ -161,6 +161,19 @@ body {
   width: 100%;
 }
 
+.home-button{
+  padding: 15px 30px;
+  background: linear-gradient(135deg, #0066CC 0%, #00A3FF 100% );
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 15px;
+}
+
 .button:hover {
   transform: translateY(-2px);
   box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
@@ -662,6 +675,11 @@ body {
 
 /* 다크모드 */
 .dark .button {
+  background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
+  color: #E5E7EB;
+}
+
+.dark .home-button {
   background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
   color: #E5E7EB;
 }
