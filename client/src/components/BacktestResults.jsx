@@ -28,7 +28,7 @@ function BacktestResults({ backtestResult, resetBacktest, initialCapital }) {
         </div>
 
         <div className="metric">
-          <div className="metric-label">연환산 수익률</div>
+          <div className="metric-label">연평균 수익률</div>
           <div className={`metric-value ${performance.annualizedReturn >= 0 ? 'positive' : 'negative'}`}>
             {performance.annualizedReturn}%
           </div>

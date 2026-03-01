@@ -12,7 +12,20 @@ const BacktestPeriod =({
     setStep,
     runBacktest,
 }) => {
-    return (
+    
+    // 핸들러 함수는 onClick이 전달하는 event 객체를 무시, 원하는 최신 state 값들을 전달
+    const handleRunBacktest = () => {
+        runBacktest({
+        setStep,
+        portfolioName,
+        holdings,
+        initialCapital,
+        startDate,
+        endDate,
+        });
+    };
+
+    return ( 
         <div className="card">
             <h2>4️⃣ 백테스트 기간 설정</h2>
         
@@ -54,7 +67,8 @@ const BacktestPeriod =({
             <button onClick={() => setStep(3)} className="button secondary">
             ← 이전
             </button>
-            <button onClick={runBacktest} className="button">
+            runBacktest(event) 형태로 호출되어 event 객체가 들어감
+            <button onClick={handleRunBacktest} className="button">
             백테스트 실행 🚀
             </button>
         </div>

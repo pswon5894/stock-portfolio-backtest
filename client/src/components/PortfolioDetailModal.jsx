@@ -9,7 +9,7 @@ function PortfolioDetailModal({ show, portfolioDetail, modalLoading, onClose }) 
     return null;
   }
   
-  // ==================== 안전한 데이터 접근 헬퍼 ====================
+  // ==================== 안전한 데이터 접근 헬퍼 함수====================  //- 안전한 접근: 객체가 없을 때 에러가 나는 걸 막음.
   const getSettingValue = (key, defaultValue = null) => {
     if (portfolioDetail && portfolioDetail.settings) {
       return portfolioDetail.settings[key] || defaultValue;
@@ -49,7 +49,7 @@ function PortfolioDetailModal({ show, portfolioDetail, modalLoading, onClose }) 
                     </div>
 
                     <div className="metric">
-                      <div className="metric-label">연환산 수익률</div>
+                      <div className="metric-label">연평균 수익률</div>
                       <div className={`metric-value ${parseFloat(getPerformanceValue('annualizedReturn', 0)) >= 0 ? 'positive' : 'negative'}`}>
                         {parseFloat(getPerformanceValue('annualizedReturn', 0)).toFixed(2)}%
                       </div>
