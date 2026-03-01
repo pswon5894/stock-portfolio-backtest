@@ -1,3 +1,4 @@
+// client/src/App.jsx
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { useThemeStore } from "./theme/themeStore";
@@ -10,7 +11,7 @@ import BacktestResults from './components/BacktestResults';
 import StockSelector from "./components/StockSelector";
 import BacktestPeriod from './components/BacktestPeriod';
 
-// import {useBacktest} from './hooks/useBacktest';
+import {useBacktest} from './hooks/useBacktest';
 
 function App() {
 
@@ -33,8 +34,8 @@ function App() {
   const [endDate, setEndDate] = useState('2025-12-31');
   
   // 결과 및 로딩
-  const [backtestResult, setBacktestResult] = useState(null);
-  const [loading, setLoading] = useState(false);
+  // const [backtestResult, setBacktestResult] = useState(null);
+  // const [loading, setLoading] = useState(false);
   
   // 랭킹 및 모달
   const [rankings, setRankings] = useState([]);
@@ -58,7 +59,7 @@ function App() {
       .catch(err => {
         setServerStatus('❌ 연결 실패');
       });
-  }, []);
+  }, [API_BASE_URL]);
 
   // ==================== 랭킹 조회 ====================
   useEffect(() => {
@@ -159,48 +160,57 @@ function App() {
 
   // ==================== 백테스트 실행 ====================
 
-  const runBacktest = async () => {
-    setLoading(true);
+  // const runBacktest = async () => {
+  //   setLoading(true);
     
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/backtest/run`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          portfolio: {
-            name: portfolioName,
-            holdings,
-            initialCapital
-          },
-          startDate,
-          endDate
-        })
-      });
+  //   try {
+  //     const response = await fetch(`${API_BASE_URL}/api/backtest/run`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         portfolio: {
+  //           name: portfolioName,
+  //           holdings,
+  //           initialCapital
+  //         },
+  //         startDate,
+  //         endDate
+  //       })
+  //     });
 
-      if (response.ok) {
-        const result = await response.json();
-        setBacktestResult({
-          ...result,
-          portfolioName,
-          holdings,
-          settings: { startDate, endDate, initialCapital }
-        });
-        setStep(5);
-      } else {
-        const error = await response.json();
-        throw new Error(error.error || '서버 응답 오류');
-      }
-    } catch (error) {
-      console.log('서버 연결 실패, 재시작 바람니다:', error);
+  //     if (response.ok) {
+  //       const result = await response.json();
+  //       setBacktestResult({
+  //         ...result,
+  //         portfolioName,
+  //         holdings,
+  //         settings: { startDate, endDate, initialCapital }
+  //       });
+  //       setStep(5);
+  //     } else {
+  //       const error = await response.json();
+  //       throw new Error(error.error || '서버 응답 오류');
+  //     }
+  //   } catch (error) {
+  //     console.log('서버 연결 실패, 재시작 바람니다:', error);
       
-      setStep(5);
-      alert('⚠️ 서버가 깨어나는 중일수도 있습니다. 웹페이지를 다시 시작해주세요\n에러: ' + error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     setStep(5);
+  //     alert('⚠️ 서버가 깨어나는 중일수도 있습니다. 웹페이지를 다시 시작해주세요\n에러: ' + error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const { runBacktest, loading, backtestResult, setBacktestResult } = useBacktest(API_BASE_URL, {
+  setStep,
+  portfolioName,
+  holdings,
+  initialCapital,
+  startDate,
+  endDate,
+});
   
   
   // ==================== 리셋 ====================
