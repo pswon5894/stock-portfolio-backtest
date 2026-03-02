@@ -1,4 +1,5 @@
 // src/hooks/useBacktest.js
+// 커스텀 훅, 백테스트, 서버 미연결시 모의 테스트
 import {useState} from 'react';
 
 export const useBacktest = (API_BASE_URL) =>{
@@ -51,6 +52,7 @@ export const useBacktest = (API_BASE_URL) =>{
     } catch (error) {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
+      // 서버 미연결시 모의 테스트
       const mockResult = {
         performance: {
           totalReturn: (Math.random() * 100 - 20).toFixed(2),
@@ -66,8 +68,6 @@ export const useBacktest = (API_BASE_URL) =>{
       };
       
       setBacktestResult(mockResult);
-
-      // console.log(setBacktestResult)
 
       setStep?.(5);
       alert('⚠️ 서버에서 실제 데이터를 가져올 수 없어 모의 데이터를 표시합니다.\n에러: ' + error.message);
