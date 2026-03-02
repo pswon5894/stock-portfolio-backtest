@@ -24,6 +24,8 @@ client/                                 # js, react, zustand
     │   └── StockSelector.jsx           # 주식 종목 선택
     ├── data/                
     │   └── stocks.js                   # 주식 종목명 제공
+    ├── hooks/                          # 커스텀 훅
+    │   └── useBacktest.js              # 백테스트, 미연결시 모의테스트
     └── theme/                
         ├── themeStore.js               # zustand 다크 모드 상태 관리관리, localstorage 이용해서 테마상태 기억
         └── ThemeToggle.js              # 테마 토글 UI 컴포넌트
