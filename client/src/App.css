@@ -633,6 +633,7 @@ body {
   display: flex;                /* Flexbox 활성화 */
   justify-content: center;      /* 가로 중앙 정렬 (space-between, flex-start 등) */
   gap: 10%;                    /* 요소 사이 간격 */
+  cursor: pointer;             /* 마우스 호버, 클릭 표시 */
 }
 .modal-overlay{
   padding: 15px 30px;
