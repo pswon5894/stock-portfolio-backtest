@@ -1,4 +1,5 @@
 // components/BacktestPeriod.js
+// # 백테스트 기간 설정
 import React from "react";
 
 const BacktestPeriod =({
@@ -67,7 +68,7 @@ const BacktestPeriod =({
             <button onClick={() => setStep(3)} className="button secondary">
             ← 이전
             </button>
-            runBacktest(event) 형태로 호출되어 event 객체가 들어감
+            {/* runBacktest(event) 형태로 호출되어 event 객체가 들어감 */}
             <button onClick={handleRunBacktest} className="button">
             백테스트 실행 🚀
             </button>

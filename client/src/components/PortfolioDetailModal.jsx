@@ -106,7 +106,7 @@ function PortfolioDetailModal({ show, portfolioDetail, modalLoading, onClose }) 
                     </div>
                   </div>
 
-                  {/* 포트폴리오 구성 */}
+                  {/* 포트폴리오 구성, 포트 비율 */}
                   <div className="holdings-summary">
                     <h3>포트폴리오 구성</h3>
                     {portfolioDetail.holdings && portfolioDetail.holdings.length > 0 ? (
@@ -121,7 +121,7 @@ function PortfolioDetailModal({ show, portfolioDetail, modalLoading, onClose }) 
                     )}
                   </div>
 
-                  {/* 백테스트 설정 */}
+                  {/* 백테스트 설정, 기간, 투자금 */}
                   <div className="detail-section">
                     <h3>⚙️ 백테스트 설정</h3>
                     <div className="settings-detail">
