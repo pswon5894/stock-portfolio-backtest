@@ -5,8 +5,14 @@ vercel 배포 주소 + render 서버리스 (초기 구동 콜드 스립 깨울 �
 
 # 프로젝트 설명
 
-클라이언트-서버 아키텍처를 기반으로 한 주식 포트폴리오 백테스팅 SPA(Single Page Application) 웹. 사용자가 웹 인터페이스(클라이언트)를 통해 포트폴리오를 구성하면,
+클라이언트-서버 아키텍처를 기반으로 한 주식 포트폴리오 백테스팅 SPA(Single Page Application) 웹.
+
+사용자가 웹 인터페이스(클라이언트)를 통해 포트폴리오를 구성하면,
 서버는 이 데이터를 받아 수익률을 계산하고 결과를 다시 클라이언트에 보여줌.
+
+SPA - 새로고침이 없고 앱처럼 사용자 반응성이 좋다
+Express + Node.js - 프론트/백 모두 js 언어 사용
+MongoDB - 데이터에 관계나 특정 순서가 중요하지 않고, json 형태로 가벼운 구조론 많은 기간의 기록을 접근하기 편하게
 
 ## 1. 프로젝트 구조
 
@@ -32,7 +38,7 @@ client/                                 # js, react, zustand
 
 server/
 
-├── server.js                 # node.js express, mongoDB, Yahoo Finance API
+├── server.js                 # node.js, express, mongoDB, Yahoo Finance API
 ├── models/                   
 │   ├── BacktestResult.js     # 백테스트 결과 모델
 │   └── Stock.js              # 캐싱된 주식 데이터 모델
@@ -42,6 +48,9 @@ server/
 └── services/                 
     ├── backtestService.js    # 백테스팅 시뮬레이션 및 계산 로직 (성과 지표, 연평균 수익률 등)
     └── stockService.js       # Yahoo Finance API 주식 데이터 조회 및 MongoDB에 캐싱 로직으로 API 호출을 줄임
+
+db
+mongodb    
 ```
 
 ## 2. 핵심 실행 흐름
@@ -90,5 +99,3 @@ server/
 * 주식 목록을 일부만 클라이언트에 데이터 부분에 넣어두었는데 원래는 백엔드 서버 부분에 넣어서 웹 수정 배포없이 db에서 업데이트하고 변경하는 것이지만 간략화를 위해서 클라이언트 data에 입력했다 (서버 연결이 안될시 랜덤값으로 채워 모의 구현 기능이 있었다.)
 
 * mongodb는 비관계형 db로 데이터 구조를 미리 정의할 필요 없어 저장 방식을 유연하게 중간에 변경할 수 있고, 대량의 데이터에 대한 빠른 읽기/쓰기 작업에 최적화지만 관계형 데이터 베이스에 비해 검색 정확도가 떨어질 수 있다
-
-* 로그인 구현, 자신의 포트폴리오 저장

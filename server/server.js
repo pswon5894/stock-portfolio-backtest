@@ -59,6 +59,7 @@ app.get('/', (req, res) => {
   });
 });
 
+// server/.env
 const username = encodeURIComponent(config.DB_USERNAME);
 const password = encodeURIComponent(config.DB_PASSWORD);
 const dbName = config.DB_NAME || 'stock-backtest';
