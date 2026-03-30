@@ -2,6 +2,7 @@
 // 커스텀 훅, 백테스트, 서버 미연결시 모의 테스트
 import {useState} from 'react';
 
+// 백테스트 서버 url = API_BASE_URL
 export const useBacktest = (API_BASE_URL) =>{
   const [loading, setLoading] = useState()
   const [backtestResult, setBacktestResult] = useState()
@@ -20,6 +21,7 @@ export const useBacktest = (API_BASE_URL) =>{
     setLoading(true);
     
     try {
+      // 백테스트 서버 url = API_BASE_URL
       const response = await fetch(`${API_BASE_URL}/api/backtest/run`, {
         method: 'POST',
         headers: {
@@ -52,7 +54,7 @@ export const useBacktest = (API_BASE_URL) =>{
     } catch (error) {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // 서버 미연결시 모의 테스트
+      // 서버 미연결시 모의 테스트 // 난수 값으로 백테스트 결과 출력
       const mockResult = {
         performance: {
           totalReturn: (Math.random() * 100 - 20).toFixed(2),

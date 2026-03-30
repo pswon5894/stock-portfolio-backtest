@@ -33,10 +33,6 @@ function App() {
   const [startDate, setStartDate] = useState('2022-01-01');
   const [endDate, setEndDate] = useState('2025-12-31');
   
-  // 결과 및 로딩
-  // const [backtestResult, setBacktestResult] = useState(null);
-  // const [loading, setLoading] = useState(false);
-  
   // 랭킹 및 모달
   const [rankings, setRankings] = useState([]);
   const [rankingsLoading, setRankingsLoading] = useState(true);
@@ -159,49 +155,6 @@ function App() {
   };
 
   // ==================== 백테스트 실행 ====================
-
-  // const runBacktest = async () => {
-  //   setLoading(true);
-    
-  //   try {
-  //     const response = await fetch(`${API_BASE_URL}/api/backtest/run`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //         portfolio: {
-  //           name: portfolioName,
-  //           holdings,
-  //           initialCapital
-  //         },
-  //         startDate,
-  //         endDate
-  //       })
-  //     });
-
-  //     if (response.ok) {
-  //       const result = await response.json();
-  //       setBacktestResult({
-  //         ...result,
-  //         portfolioName,
-  //         holdings,
-  //         settings: { startDate, endDate, initialCapital }
-  //       });
-  //       setStep(5);
-  //     } else {
-  //       const error = await response.json();
-  //       throw new Error(error.error || '서버 응답 오류');
-  //     }
-  //   } catch (error) {
-  //     console.log('서버 연결 실패, 재시작 바람니다:', error);
-      
-  //     setStep(5);
-  //     alert('⚠️ 서버가 깨어나는 중일수도 있습니다. 웹페이지를 다시 시작해주세요\n에러: ' + error.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const { runBacktest, loading, backtestResult, setBacktestResult } = useBacktest(API_BASE_URL, {
   setStep,
